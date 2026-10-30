@@ -80,6 +80,10 @@ class Medicine(models.Model):
     def is_in_stock(self):
         return self.stock > 0
 
+    @property
+    def is_low_stock(self):
+        return 0 < self.stock <= 10
+
     def __str__(self):
         return f"{self.name} ({self.dosage}) - ৳{self.price}"
 

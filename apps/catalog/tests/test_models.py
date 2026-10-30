@@ -38,3 +38,8 @@ class MedicineModelAndRepositoryTests(TestCase):
         self.assertTrue(self.med1.is_in_stock)
         self.assertFalse(self.med2.is_in_stock)
 
+
+    def test_is_low_stock_property(self):
+        self.assertFalse(self.med1.is_low_stock)
+        self.assertFalse(self.med2.is_low_stock)
+        self.assertTrue(self.med3.is_low_stock)
