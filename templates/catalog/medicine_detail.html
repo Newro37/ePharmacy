@@ -1,0 +1,87 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ medicine.name }} — ePharmacy{% endblock %}
+
+{% block content %}
+<div class="container">
+  <nav aria-label="breadcrumb" class="mb-3">
+    <ol class="breadcrumb small">
+      <li class="breadcrumb-item"><a href="{% url 'catalog:home' %}">Home</a></li>
+      <li class="breadcrumb-item"><a href="{% url 'catalog:medicine_list' %}">Catalog</a></li>
+      <li class="breadcrumb-item active">{{ medicine.name }}</li>
+    </ol>
+  </nav>
+
+  <div class="card p-4 shadow-sm border-0 mb-4">
+    <div class="row align-items-center">
+      <div class="col-md-5 text-center p-4 bg-light rounded">
+        <i class="bi bi-capsule-pill text-success display-1"></i>
+      </div>
+      <div class="col-md-7 ps-md-4 mt-3 mt-md-0">
+        <div class="d-flex align-items-center gap-2 mb-2">
+          <span class="badge bg-secondary">{{ medicine.category.name }}</span>
+          {% if medicine.prescription_required %}
+            <span class="badge-rx"><i class="bi bi-exclamation-triangle"></i> Prescription Required</span>
+          {% else %}
+            <span class="badge-otc"><i class="bi bi-check-circle"></i> Over the Counter (OTC)</span>
+          {% endif %}
+        </div>
+
+        <h2 class="fw-bold mb-1">{{ medicine.name }}</h2>
+        <h6 class="text-muted mb-3">{{ medicine.dosage }} — {{ medicine.manufacturer.name }}</h6>
+
+        <div class="mb-3">
+          <span class="display-6 fw-bold text-success">৳{{ medicine.price }}</span>
+          <span class="text-muted small ms-2">per unit / strip</span>
+        </div>
+
+        <div class="mb-4">
+          <span class="fw-bold">Availability: </span>
+          {% if medicine.is_in_stock %}
+            <span class="text-success fw-bold"><i class="bi bi-check-circle-fill"></i> In Stock ({{ medicine.stock }} units available)</span>
+          {% else %}
+            <span class="text-danger fw-bold"><i class="bi bi-x-circle-fill"></i> Currently Out of Stock</span>
+          {% endif %}
+        </div>
+
+        {% if medicine.prescription_required %}
+          <div class="alert alert-warning d-flex align-items-center gap-2 mb-4" role="alert">
+            <i class="bi bi-shield-exclamation fs-4"></i>
+            <div class="small">
+              <strong>Medical Regulatory Compliance:</strong> This medicine requires an approved doctor's prescription before checkout can be finalized.
+            </div>
+          </div>
+        {% endif %}
+
+        <div class="d-flex gap-2">
+          {% if medicine.is_in_stock %}
+            <a href="{% url 'cart:add_to_cart' medicine_id=medicine.pk %}" class="btn btn-success btn-lg px-4">
+              <i class="bi bi-cart-plus"></i> Add to Shopping Cart
+            </a>
+          {% endif %}
+          {% if medicine.prescription_required %}
+            <a href="{% url 'prescriptions:upload' %}" class="btn btn-outline-warning btn-lg px-4">
+              <i class="bi bi-upload"></i> Upload Rx
+            </a>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Medical Info Tabs -->
+  <div class="card p-4 shadow-sm border-0 mb-4">
+    <h5 class="fw-bold mb-3">Pharmacological Information</h5>
+    <div class="mb-3">
+      <h6 class="fw-bold text-muted small text-uppercase">Description & Indications</h6>
+      <p>{{ medicine.description|default:"Standard pharmaceutical preparation adhering to regulatory standards." }}</p>
+    </div>
+    {% if medicine.side_effects %}
+      <div>
+        <h6 class="fw-bold text-muted small text-uppercase">Possible Side Effects & Contraindications</h6>
+        <p class="text-muted small mb-0">{{ medicine.side_effects }}</p>
+      </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

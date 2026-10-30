@@ -1,0 +1,78 @@
+{% extends 'base_dashboard.html' %}
+
+{% block title %}Medicine Inventory — ePharmacy ERP{% endblock %}
+
+{% block dashboard_content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <div>
+    <h3 class="fw-bold mb-0">Medicine Inventory & Pricing</h3>
+    <p class="text-muted small">Catalog CRUD, Stock Adjustments, and Active Status Management</p>
+  </div>
+  <a href="{% url 'dashboard:medicine_create' %}" class="btn btn-success fw-bold">
+    <i class="bi bi-plus-lg"></i> Add New Product
+  </a>
+</div>
+
+<div class="card shadow-sm border-0">
+  <div class="table-responsive">
+    <table class="table table-hover align-middle mb-0">
+      <thead class="table-light">
+        <tr>
+          <th>Product Name</th>
+          <th>Dosage</th>
+          <th>Category</th>
+          <th>Manufacturer</th>
+          <th>Price</th>
+          <th>Stock</th>
+          <th>Dispensing</th>
+          <th>Status</th>
+          <th class="text-end">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for med in medicines %}
+          <tr class="{% if not med.is_active %}table-secondary opacity-75{% endif %}">
+            <td class="fw-bold">{{ med.name }}</td>
+            <td>{{ med.dosage }}</td>
+            <td><span class="badge bg-light text-dark border">{{ med.category.name }}</span></td>
+            <td><small class="text-muted">{{ med.manufacturer.name }}</small></td>
+            <td class="fw-bold text-success">৳{{ med.price }}</td>
+            <td>
+              {% if med.stock <= 10 %}
+                <span class="badge bg-danger">{{ med.stock }} (Critical)</span>
+              {% else %}
+                <span class="badge bg-success">{{ med.stock }}</span>
+              {% endif %}
+            </td>
+            <td>
+              {% if med.prescription_required %}
+                <span class="badge-rx">Rx</span>
+              {% else %}
+                <span class="badge-otc">OTC</span>
+              {% endif %}
+            </td>
+            <td>
+              {% if med.is_active %}
+                <span class="badge bg-success">Active</span>
+              {% else %}
+                <span class="badge bg-secondary">Inactive</span>
+              {% endif %}
+            </td>
+            <td class="text-end">
+              <a href="{% url 'dashboard:medicine_update' pk=med.pk %}" class="btn btn-sm btn-outline-primary me-1" title="Edit Product">
+                <i class="bi bi-pencil"></i>
+              </a>
+              <form action="{% url 'dashboard:medicine_toggle' pk=med.pk %}" method="post" class="d-inline">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-sm {% if med.is_active %}btn-outline-danger{% else %}btn-outline-success{% endif %}" title="Toggle Active">
+                  <i class="bi bi-power"></i>
+                </button>
+              </form>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

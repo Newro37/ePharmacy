@@ -1,0 +1,73 @@
+{% extends 'base_dashboard.html' %}
+
+{% block title %}{{ title }} — ePharmacy ERP{% endblock %}
+
+{% block dashboard_content %}
+<div class="container" style="max-width: 800px;">
+  <div class="card p-4 shadow-sm border-0">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <h4 class="fw-bold mb-0">{{ title }}</h4>
+      <a href="{% url 'dashboard:medicine_list' %}" class="btn btn-outline-secondary btn-sm">
+        <i class="bi bi-arrow-left"></i> Back to Inventory
+      </a>
+    </div>
+
+    <form method="post" enctype="multipart/form-data">
+      {% csrf_token %}
+      <div class="row g-3">
+        <div class="col-md-6">
+          <label class="form-label fw-bold small">Medicine Trade Name</label>
+          {{ form.name }}
+        </div>
+        <div class="col-md-6">
+          <label class="form-label fw-bold small">Dosage Strength (e.g. 500mg, 10ml)</label>
+          {{ form.dosage }}
+        </div>
+        <div class="col-md-6">
+          <label class="form-label fw-bold small">Therapeutic Category</label>
+          {{ form.category }}
+        </div>
+        <div class="col-md-6">
+          <label class="form-label fw-bold small">Manufacturer Company</label>
+          {{ form.manufacturer }}
+        </div>
+        <div class="col-md-6">
+          <label class="form-label fw-bold small">Unit Price (BDT ৳)</label>
+          {{ form.price }}
+        </div>
+        <div class="col-md-6">
+          <label class="form-label fw-bold small">Warehouse Stock Quantity</label>
+          {{ form.stock }}
+        </div>
+        <div class="col-12">
+          <div class="form-check form-switch p-3 border rounded">
+            {{ form.prescription_required }}
+            <label class="form-check-label fw-bold ms-2" for="{{ form.prescription_required.id_for_label }}">
+              Prescription Required (Restricted Drug)
+            </label>
+            <div class="form-text small">Requires licensed pharmacist verification before dispensing.</div>
+          </div>
+        </div>
+        <div class="col-12">
+          <label class="form-label fw-bold small">Product Description & Indications</label>
+          {{ form.description }}
+        </div>
+        <div class="col-12">
+          <label class="form-label fw-bold small">Side Effects & Contraindications</label>
+          {{ form.side_effects }}
+        </div>
+        <div class="col-12">
+          <label class="form-label fw-bold small">Product Image (Optional)</label>
+          {{ form.image }}
+        </div>
+      </div>
+
+      <div class="mt-4 pt-2">
+        <button type="submit" class="btn btn-success btn-lg px-4 fw-bold">
+          <i class="bi bi-save"></i> Save Product Information
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

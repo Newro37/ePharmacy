@@ -1,0 +1,92 @@
+{% extends 'base_dashboard.html' %}
+
+{% block title %}Prescription Verification Queue — ePharmacy ERP{% endblock %}
+
+{% block dashboard_content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <div>
+    <h3 class="fw-bold mb-0"><i class="bi bi-file-medical text-success"></i> Clinical Prescription Queue</h3>
+    <p class="text-muted small">Licensed Pharmacist Review & Dispensation Authorization Desk</p>
+  </div>
+  <div>
+    <span class="badge bg-warning text-dark fs-6">{{ pending_list.count }} Pending Verification</span>
+  </div>
+</div>
+
+<!-- Pending Queue -->
+<div class="card shadow-sm border-0 mb-4">
+  <div class="card-header bg-white py-3">
+    <h5 class="fw-bold mb-0">Pending Verification Submissions</h5>
+  </div>
+  <div class="table-responsive">
+    <table class="table table-hover align-middle mb-0">
+      <thead class="table-light">
+        <tr>
+          <th>Rx ID</th>
+          <th>Patient Account</th>
+          <th>Submitted Time</th>
+          <th>Patient Clinical Notes</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for rx in pending_list %}
+          <tr>
+            <td class="fw-bold">#{{ rx.pk }}</td>
+            <td>{{ rx.user.email }}</td>
+            <td>{{ rx.created_at|date:"M d, Y h:i A" }}</td>
+            <td><small>{{ rx.notes|default:"No special notes provided."|truncatechars:60 }}</small></td>
+            <td>
+              <a href="{% url 'prescriptions:review_detail' pk=rx.pk %}" class="btn btn-sm btn-success fw-bold">
+                <i class="bi bi-search"></i> Verify & Decide
+              </a>
+            </td>
+          </tr>
+        {% empty %}
+          <tr>
+            <td colspan="5" class="text-center py-4 text-muted">
+              <i class="bi bi-check2-all fs-2 text-success d-block mb-1"></i>
+              All prescriptions in queue have been reviewed!
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Recently Reviewed -->
+<div class="card shadow-sm border-0">
+  <div class="card-header bg-white py-3">
+    <h5 class="fw-bold mb-0">Recently Decided Prescriptions</h5>
+  </div>
+  <div class="table-responsive">
+    <table class="table align-middle mb-0">
+      <thead class="table-light">
+        <tr>
+          <th>Rx ID</th>
+          <th>Patient</th>
+          <th>Decision</th>
+          <th>Pharmacist Remarks</th>
+          <th>Reviewed By</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for rx in reviewed_list %}
+          <tr>
+            <td class="fw-bold">#{{ rx.pk }}</td>
+            <td>{{ rx.user.email }}</td>
+            <td>
+              <span class="badge {% if rx.status == 'approved' %}bg-success{% else %}bg-danger{% endif %}">
+                {{ rx.get_status_display }}
+              </span>
+            </td>
+            <td><small class="text-muted">{{ rx.review_notes }}</small></td>
+            <td><small>{{ rx.reviewed_by.email }} ({{ rx.reviewed_at|date:"M d, h:i A" }})</small></td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

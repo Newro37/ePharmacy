@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block title %}Sign Out — ePharmacy{% endblock %}
+
+{% block content %}
+<div class="container text-center py-5" style="max-width: 500px;">
+  <div class="card p-4 shadow-sm border-0">
+    <i class="bi bi-box-arrow-right display-5 text-warning mb-3"></i>
+    <h3 class="fw-bold mb-2">Sign Out</h3>
+    <p class="text-muted small mb-4">Are you sure you want to sign out of your account?</p>
+
+    <form method="post" action="{% url 'account_logout' %}">
+      {% csrf_token %}
+      <div class="d-grid gap-2">
+        <button type="submit" class="btn btn-danger btn-lg fw-bold">Yes, Sign Out</button>
+        <a href="{% url 'catalog:home' %}" class="btn btn-outline-secondary">Cancel</a>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

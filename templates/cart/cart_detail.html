@@ -1,0 +1,100 @@
+{% extends 'base.html' %}
+
+{% block title %}Shopping Cart — ePharmacy{% endblock %}
+
+{% block content %}
+<div class="container">
+  <h3 class="fw-bold mb-4"><i class="bi bi-cart3"></i> Your Shopping Cart</h3>
+
+  {% if cart.items.exists %}
+    <div class="row">
+      <div class="col-lg-8">
+        <div class="card shadow-sm border-0 mb-4">
+          <div class="table-responsive">
+            <table class="table align-middle mb-0">
+              <thead class="table-light">
+                <tr>
+                  <th>Medicine</th>
+                  <th>Price</th>
+                  <th style="width: 150px;">Quantity</th>
+                  <th>Subtotal</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for item in cart.items.all %}
+                  <tr>
+                    <td>
+                      <div class="fw-bold">{{ item.medicine.name }}</div>
+                      <div class="small text-muted">
+                        {{ item.medicine.dosage }}
+                        {% if item.medicine.prescription_required %}
+                          <span class="badge-rx ms-1">Rx</span>
+                        {% endif %}
+                      </div>
+                    </td>
+                    <td>৳{{ item.medicine.price }}</td>
+                    <td>
+                      <form action="{% url 'cart:update_cart_item' item_id=item.pk %}" method="post" class="d-flex align-items-center gap-1">
+                        {% csrf_token %}
+                        <button type="submit" name="action" value="decrease" class="btn btn-sm btn-outline-secondary px-2">-</button>
+                        <span class="px-2 fw-bold">{{ item.quantity }}</span>
+                        <button type="submit" name="action" value="increase" class="btn btn-sm btn-outline-secondary px-2">+</button>
+                      </form>
+                    </td>
+                    <td class="fw-bold text-success">৳{{ item.get_subtotal }}</td>
+                    <td>
+                      <a href="{% url 'cart:remove_from_cart' item_id=item.pk %}" class="text-danger" title="Remove"><i class="bi bi-trash"></i></a>
+                    </td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-4">
+        <div class="card p-4 shadow-sm border-0 mb-4">
+          <h5 class="fw-bold mb-3">Order Summary</h5>
+          <div class="d-flex justify-content-between mb-2">
+            <span>Items Count:</span>
+            <span class="fw-bold">{{ cart.get_item_count }}</span>
+          </div>
+          <div class="d-flex justify-content-between mb-3">
+            <span>Subtotal:</span>
+            <span class="fw-bold fs-5 text-success">৳{{ cart.get_total }}</span>
+          </div>
+          <hr>
+
+          {% if has_rx_items %}
+            {% if approved_rx_count > 0 %}
+              <div class="alert alert-success small mb-3">
+                <i class="bi bi-check-circle-fill"></i> You have an approved prescription on file.
+              </div>
+            {% else %}
+              <div class="alert alert-warning small mb-3">
+                <i class="bi bi-exclamation-triangle-fill"></i> Prescription required. Please upload doctor's prescription before proceeding.
+                <div class="mt-2">
+                  <a href="{% url 'prescriptions:upload' %}" class="btn btn-sm btn-warning w-100">Upload Rx</a>
+                </div>
+              </div>
+            {% endif %}
+          {% endif %}
+
+          <a href="{% url 'cart:checkout' %}" class="btn btn-success btn-lg w-100 fw-bold">
+            Proceed to Checkout <i class="bi bi-arrow-right"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+  {% else %}
+    <div class="text-center py-5">
+      <i class="bi bi-cart-x fs-1 text-muted mb-3 d-block"></i>
+      <h4>Your shopping cart is currently empty</h4>
+      <p class="text-muted">Browse our medicine catalog to add items to your cart.</p>
+      <a href="{% url 'catalog:medicine_list' %}" class="btn btn-success mt-2">Browse Catalog</a>
+    </div>
+  {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,55 @@
+{% extends 'base_dashboard.html' %}
+
+{% block title %}User & Staff Management — ePharmacy ERP{% endblock %}
+
+{% block dashboard_content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <div>
+    <h3 class="fw-bold mb-0">User Accounts & Role Governance</h3>
+    <p class="text-muted small">Super Admin RBAC User Audits</p>
+  </div>
+</div>
+
+<div class="card shadow-sm border-0">
+  <div class="table-responsive">
+    <table class="table table-hover align-middle mb-0">
+      <thead class="table-light">
+        <tr>
+          <th>User / Email</th>
+          <th>Full Name</th>
+          <th>Role</th>
+          <th>Phone</th>
+          <th>Active</th>
+          <th>Date Joined</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for u in users %}
+          <tr>
+            <td class="fw-bold">{{ u.email }}</td>
+            <td>{{ u.get_full_name|default:"—" }}</td>
+            <td>
+              {% if u.is_admin_user %}
+                <span class="badge bg-danger">Super Admin</span>
+              {% elif u.is_pharmacist %}
+                <span class="badge bg-info text-dark">Pharmacist</span>
+              {% else %}
+                <span class="badge bg-secondary">Customer</span>
+              {% endif %}
+            </td>
+            <td>{{ u.phone|default:"—" }}</td>
+            <td>
+              {% if u.is_active %}
+                <span class="text-success"><i class="bi bi-check-circle-fill"></i> Active</span>
+              {% else %}
+                <span class="text-muted"><i class="bi bi-x-circle-fill"></i> Suspended</span>
+              {% endif %}
+            </td>
+            <td><small class="text-muted">{{ u.date_joined|date:"M d, Y" }}</small></td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

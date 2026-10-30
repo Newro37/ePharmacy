@@ -1,0 +1,138 @@
+{% extends 'base_dashboard.html' %}
+
+{% block title %}Executive Overview — ePharmacy Operations ERP{% endblock %}
+
+{% block dashboard_content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <div>
+    <h3 class="fw-bold mb-0">Dispensary Operations & Executive Telemetry</h3>
+    <p class="text-muted small">Central Single-Pharmacy Enterprise Telemetry</p>
+  </div>
+  <div>
+    <a href="{% url 'dashboard:medicine_create' %}" class="btn btn-success fw-bold"><i class="bi bi-plus-lg"></i> Add New Medicine</a>
+  </div>
+</div>
+
+<!-- 4 Real-Time Operational KPI Cards -->
+<div class="row g-3 mb-4">
+  <div class="col-sm-6 col-xl-3">
+    <div class="card p-3 shadow-sm border-0 border-start border-4 border-success">
+      <div class="d-flex justify-content-between align-items-center">
+        <div>
+          <span class="text-muted small fw-bold text-uppercase">Total Orders</span>
+          <h2 class="fw-bold my-1 text-dark">{{ total_orders }}</h2>
+          <span class="text-success small fw-bold"><i class="bi bi-check2"></i> All-time Volume</span>
+        </div>
+        <i class="bi bi-box-seam fs-1 text-success opacity-75"></i>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-sm-6 col-xl-3">
+    <div class="card p-3 shadow-sm border-0 border-start border-4 border-warning">
+      <div class="d-flex justify-content-between align-items-center">
+        <div>
+          <span class="text-muted small fw-bold text-uppercase">Pending Orders</span>
+          <h2 class="fw-bold my-1 text-warning">{{ pending_orders }}</h2>
+          <span class="text-muted small">Awaiting Fulfillment</span>
+        </div>
+        <i class="bi bi-hourglass-split fs-1 text-warning opacity-75"></i>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-sm-6 col-xl-3">
+    <div class="card p-3 shadow-sm border-0 border-start border-4 border-primary">
+      <div class="d-flex justify-content-between align-items-center">
+        <div>
+          <span class="text-muted small fw-bold text-uppercase">Gross Revenue</span>
+          <h2 class="fw-bold my-1 text-primary">৳{{ gross_revenue|floatformat:2 }}</h2>
+          <span class="text-primary small fw-bold">Settled Volume</span>
+        </div>
+        <i class="bi bi-cash-stack fs-1 text-primary opacity-75"></i>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-sm-6 col-xl-3">
+    <div class="card p-3 shadow-sm border-0 border-start border-4 border-danger">
+      <div class="d-flex justify-content-between align-items-center">
+        <div>
+          <span class="text-muted small fw-bold text-uppercase">Low Stock Alerts</span>
+          <h2 class="fw-bold my-1 text-danger">{{ low_stock_count }}</h2>
+          <span class="text-danger small fw-bold">&le; 10 units left</span>
+        </div>
+        <i class="bi bi-exclamation-triangle fs-1 text-danger opacity-75"></i>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row g-4">
+  <!-- Recent Orders Table -->
+  <div class="col-lg-8">
+    <div class="card shadow-sm border-0">
+      <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
+        <h5 class="fw-bold mb-0">Recent Order Activity</h5>
+        <a href="{% url 'dashboard:orders' %}" class="small text-decoration-none">View All Pipeline &rarr;</a>
+      </div>
+      <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+          <thead class="table-light">
+            <tr>
+              <th>Order ID</th>
+              <th>Customer</th>
+              <th>Total</th>
+              <th>Status</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for ord in recent_orders %}
+              <tr>
+                <td class="fw-bold">#{{ ord.pk }}</td>
+                <td>{{ ord.user.email }}</td>
+                <td class="fw-bold text-success">৳{{ ord.total_amount }}</td>
+                <td>
+                  <span class="badge {% if ord.status == 'delivered' %}bg-success{% elif ord.status == 'cancelled' %}bg-danger{% else %}bg-warning text-dark{% endif %}">
+                    {{ ord.get_status_display }}
+                  </span>
+                </td>
+                <td>
+                  <a href="{% url 'cart:order_detail' order_id=ord.pk %}" class="btn btn-sm btn-outline-secondary">Inspect</a>
+                </td>
+              </tr>
+            {% empty %}
+              <tr><td colspan="5" class="text-center py-3 text-muted">No orders placed yet.</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Low Stock Items Warning -->
+  <div class="col-lg-4">
+    <div class="card shadow-sm border-0 mb-4">
+      <div class="card-header bg-white py-3">
+        <h5 class="fw-bold mb-0 text-danger"><i class="bi bi-shield-exclamation"></i> Critical Stock Warnings</h5>
+      </div>
+      <div class="card-body p-0">
+        <ul class="list-group list-group-flush">
+          {% for med in low_stock_medicines %}
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+              <div>
+                <span class="fw-bold">{{ med.name }}</span>
+                <div class="small text-muted">{{ med.dosage }}</div>
+              </div>
+              <span class="badge bg-danger rounded-pill">{{ med.stock }} units</span>
+            </li>
+          {% empty %}
+            <li class="list-group-item text-center py-3 text-muted">All medicines are above stock thresholds.</li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

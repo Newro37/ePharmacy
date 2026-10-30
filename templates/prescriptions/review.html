@@ -1,0 +1,69 @@
+{% extends 'base_dashboard.html' %}
+
+{% block title %}Verify Rx #{{ prescription.pk }} — Clinical Studio{% endblock %}
+
+{% block dashboard_content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <div>
+    <h3 class="fw-bold mb-0">Clinical Verification Studio: Rx #{{ prescription.pk }}</h3>
+    <span class="text-muted small">Patient: {{ prescription.user.email }} | Submitted: {{ prescription.created_at|date:"M d, Y h:i A" }}</span>
+  </div>
+  <a href="{% url 'prescriptions:review_list' %}" class="btn btn-outline-secondary btn-sm">
+    <i class="bi bi-arrow-left"></i> Back to Queue
+  </a>
+</div>
+
+<!-- Split-Screen Review Workbench -->
+<div class="row g-4">
+  <!-- Left Panel: High-Resolution Prescription Viewer -->
+  <div class="col-lg-7">
+    <div class="card p-3 shadow-sm border-0 h-100">
+      <div class="d-flex justify-content-between align-items-center mb-2">
+        <h6 class="fw-bold text-muted small text-uppercase mb-0">Prescription Scanned Image</h6>
+        <a href="{{ prescription.image.url }}" target="_blank" class="btn btn-sm btn-outline-primary">
+          <i class="bi bi-zoom-in"></i> Full Window
+        </a>
+      </div>
+      <div class="text-center bg-dark p-2 rounded overflow-auto" style="max-height: 650px;">
+        <img src="{{ prescription.image.url }}" class="img-fluid rounded" alt="Prescription Upload">
+      </div>
+    </div>
+  </div>
+
+  <!-- Right Panel: Clinical Decision & Patient Context -->
+  <div class="col-lg-5">
+    <div class="card p-4 shadow-sm border-0 mb-3">
+      <h5 class="fw-bold mb-3"><i class="bi bi-clipboard2-pulse"></i> Patient Particulars</h5>
+      <ul class="list-group list-group-flush mb-3 small">
+        <li class="list-group-item px-0"><strong>Patient Email:</strong> {{ prescription.user.email }}</li>
+        <li class="list-group-item px-0"><strong>Contact Phone:</strong> {{ prescription.user.phone|default:"Not specified" }}</li>
+        <li class="list-group-item px-0">
+          <strong>Patient Clinical Notes:</strong>
+          <p class="text-muted mt-1 mb-0">{{ prescription.notes|default:"No notes submitted." }}</p>
+        </li>
+      </ul>
+
+      <hr>
+
+      <h5 class="fw-bold mb-3"><i class="bi bi-shield-check"></i> Pharmacist Decision Form</h5>
+      <form method="post">
+        {% csrf_token %}
+        <div class="mb-3">
+          <label class="form-label small fw-bold">Clinical Verification Remarks / Dosage Directives</label>
+          <textarea name="review_notes" class="form-control" rows="4" placeholder="Enter verified drug names, strengths, approved days of supply, or reason if rejecting..." required>{{ prescription.review_notes }}</textarea>
+          <div class="form-text small">These remarks are transmitted directly to the patient's record and in-app notifications.</div>
+        </div>
+
+        <div class="d-grid gap-2">
+          <button type="submit" name="action" value="approve" class="btn btn-success btn-lg fw-bold">
+            <i class="bi bi-check-circle"></i> Approve for Dispensation
+          </button>
+          <button type="submit" name="action" value="reject" class="btn btn-outline-danger btn-lg fw-bold" onclick="return confirm('Are you sure you want to reject this prescription?');">
+            <i class="bi bi-x-circle"></i> Reject Prescription
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}
