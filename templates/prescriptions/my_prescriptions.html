@@ -1,12 +1,13 @@
-{% extends 'base.html' %}
+{% extends 'base_with_sidebar.html' %}
 
 {% block title %}My Prescriptions — ePharmacy{% endblock %}
 
+{% block page_title %}My Prescriptions{% endblock %}
+
 {% block content %}
-<div class="container">
   <div class="d-flex justify-content-between align-items-center mb-4">
-    <h3 class="fw-bold mb-0"><i class="bi bi-file-medical"></i> My Uploaded Prescriptions</h3>
-    <a href="{% url 'prescriptions:upload' %}" class="btn btn-success"><i class="bi bi-upload"></i> Upload New Rx</a>
+    <h5 class="fw-bold mb-0">My Uploaded Prescriptions</h5>
+    <a href="{% url 'prescriptions:upload' %}" class="btn btn-sm btn-success"><i class="bi bi-upload"></i> Upload New</a>
   </div>
 
   {% if prescriptions %}
@@ -43,6 +44,5 @@
       <a href="{% url 'prescriptions:upload' %}" class="btn btn-success mt-2">Upload First Prescription</a>
     </div>
   {% endif %}
-</div>
 {% endblock %}
 

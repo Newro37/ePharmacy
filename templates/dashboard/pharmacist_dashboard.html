@@ -1,0 +1,224 @@
+{% extends 'base_with_sidebar.html' %}
+{% block title %}Pharmacist Dashboard — ePharmacy{% endblock %}
+{% block page_title %}Pharmacist Overview{% endblock %}
+
+{% block content %}
+
+<!-- ── Prescription Stats ──────────────────────────────────────────── -->
+<p class="section-label">Prescriptions</p>
+<div class="row g-3 mb-4">
+  <div class="col-md-4">
+    <div class="card stat-card accent p-3">
+      <div class="d-flex justify-content-between align-items-start">
+        <div>
+          <p class="stat-label mb-1">Pending Review</p>
+          <p class="stat-value mb-0">{{ pending_prescriptions_count }}</p>
+          <p class="stat-sub mt-1">Awaiting action</p>
+        </div>
+        <i class="bi bi-file-medical stat-icon"></i>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="card stat-card p-3">
+      <div class="d-flex justify-content-between align-items-start">
+        <div>
+          <p class="stat-label mb-1">Approved Today</p>
+          <p class="stat-value mb-0">{{ approved_today }}</p>
+          <p class="stat-sub mt-1">Verified</p>
+        </div>
+        <i class="bi bi-check-circle stat-icon"></i>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="card stat-card p-3">
+      <div class="d-flex justify-content-between align-items-start">
+        <div>
+          <p class="stat-label mb-1">Rejected Today</p>
+          <p class="stat-value mb-0">{{ rejected_today }}</p>
+          <p class="stat-sub mt-1">Safety concerns</p>
+        </div>
+        <i class="bi bi-x-circle stat-icon"></i>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── Order Stats ─────────────────────────────────────────────────── -->
+<p class="section-label">Orders</p>
+<div class="row g-3 mb-4">
+  <div class="col-md-4">
+    <div class="card stat-card p-3">
+      <div class="d-flex justify-content-between align-items-start">
+        <div>
+          <p class="stat-label mb-1">Pending Orders</p>
+          <p class="stat-value mb-0">{{ pending_orders }}</p>
+          <p class="stat-sub mt-1">Need fulfillment</p>
+        </div>
+        <i class="bi bi-box-seam stat-icon"></i>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="card stat-card p-3">
+      <div class="d-flex justify-content-between align-items-start">
+        <div>
+          <p class="stat-label mb-1">Processing</p>
+          <p class="stat-value mb-0">{{ processing_orders }}</p>
+          <p class="stat-sub mt-1">Being prepared</p>
+        </div>
+        <i class="bi bi-arrow-repeat stat-icon"></i>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="card stat-card p-3">
+      <div class="d-flex justify-content-between align-items-start">
+        <div>
+          <p class="stat-label mb-1">Orders Today</p>
+          <p class="stat-value mb-0">{{ orders_today }}</p>
+          <p class="stat-sub mt-1">Received</p>
+        </div>
+        <i class="bi bi-calendar-check stat-icon"></i>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── Main content + sidebar ─────────────────────────────────────── -->
+<div class="row g-3">
+  <div class="col-lg-8">
+
+    <!-- Prescription queue table -->
+    <div class="card mb-3">
+      <div class="card-header d-flex justify-content-between align-items-center">
+        <h6>Prescription Queue</h6>
+        <a href="{% url 'prescriptions:review_list' %}" class="btn btn-sm btn-outline-secondary">View All</a>
+      </div>
+      <div class="card-body p-0">
+        {% if recent_prescriptions %}
+          <div class="table-responsive">
+            <table class="table mb-0">
+              <thead>
+                <tr><th>ID</th><th>Patient</th><th>Submitted</th><th>Status</th><th></th></tr>
+              </thead>
+              <tbody>
+                {% for rx in recent_prescriptions %}
+                  <tr>
+                    <td class="fw-semibold">#{{ rx.pk }}</td>
+                    <td>{{ rx.user.email }}</td>
+                    <td>{{ rx.created_at|timesince }} ago</td>
+                    <td><span class="badge status-pending">Pending</span></td>
+                    <td>
+                      <a href="{% url 'prescriptions:review_detail' pk=rx.pk %}" class="btn btn-sm btn-outline-secondary">Review</a>
+                    </td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        {% else %}
+          <div class="text-center py-4 text-muted">
+            <i class="bi bi-check2-all fs-1 d-block mb-2"></i>All prescriptions reviewed.
+          </div>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- Order pipeline table -->
+    <div class="card">
+      <div class="card-header d-flex justify-content-between align-items-center">
+        <h6>Order Pipeline</h6>
+        <a href="{% url 'dashboard:orders' %}" class="btn btn-sm btn-outline-secondary">Full Pipeline</a>
+      </div>
+      <div class="card-body p-0">
+        {% if recent_orders %}
+          <div class="table-responsive">
+            <table class="table mb-0">
+              <thead>
+                <tr><th>ID</th><th>Customer</th><th>Amount</th><th>Status</th><th></th></tr>
+              </thead>
+              <tbody>
+                {% for order in recent_orders %}
+                  <tr>
+                    <td class="fw-semibold">#{{ order.pk }}</td>
+                    <td>{{ order.user.email }}</td>
+                    <td class="fw-semibold">৳{{ order.total_amount }}</td>
+                    <td>
+                      {% if order.status == 'pending' %}
+                        <span class="badge status-pending">Pending</span>
+                      {% else %}
+                        <span class="badge status-processing">Processing</span>
+                      {% endif %}
+                    </td>
+                    <td><a href="{% url 'cart:order_detail' order_id=order.pk %}" class="btn btn-sm btn-outline-secondary">View</a></td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        {% else %}
+          <div class="text-center py-4 text-muted">
+            <i class="bi bi-inbox fs-1 d-block mb-2"></i>No pending orders.
+          </div>
+        {% endif %}
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Right panel -->
+  <div class="col-lg-4">
+
+    <!-- Inventory alerts -->
+    <div class="card mb-3">
+      <div class="card-header d-flex justify-content-between align-items-center">
+        <h6>Inventory Alerts</h6>
+        <a href="{% url 'dashboard:medicine_list' %}?stock=low" class="btn btn-sm btn-outline-secondary">View</a>
+      </div>
+      <div class="card-body p-0">
+        <div class="list-group list-group-flush" style="font-size:0.8125rem;">
+          <div class="list-group-item d-flex justify-content-between py-2">
+            <span class="text-muted">Low Stock (≤10)</span>
+            <span class="fw-semibold">{{ low_stock_count }}</span>
+          </div>
+          <div class="list-group-item d-flex justify-content-between py-2">
+            <span class="text-muted">Expired</span>
+            <span class="fw-semibold">{{ expired_medicines }}</span>
+          </div>
+          <div class="list-group-item d-flex justify-content-between py-2">
+            <span class="text-muted">Near Expiry (30d)</span>
+            <span class="fw-semibold">{{ near_expiry_medicines }}</span>
+          </div>
+          <div class="list-group-item d-flex justify-content-between py-2">
+            <span class="text-muted">Total Medicines</span>
+            <span class="fw-semibold">{{ total_medicines }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Critical stock list -->
+    {% if low_stock_medicines %}
+    <div class="card">
+      <div class="card-header"><h6>Critical Stock</h6></div>
+      <div class="card-body p-0">
+        <ul class="list-group list-group-flush" style="font-size:0.8125rem;">
+          {% for med in low_stock_medicines %}
+            <li class="list-group-item d-flex justify-content-between align-items-center py-2">
+              <div>
+                <span class="fw-semibold d-block">{{ med.name }}</span>
+                <span class="stat-sub">{{ med.dosage }}</span>
+              </div>
+              <span class="fw-semibold">{{ med.stock }}</span>
+            </li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+    {% endif %}
+
+  </div>
+</div>
+{% endblock %}

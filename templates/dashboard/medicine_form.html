@@ -1,8 +1,10 @@
-{% extends 'base_dashboard.html' %}
+{% extends 'base_with_sidebar.html' %}
 
 {% block title %}{{ title }} — ePharmacy ERP{% endblock %}
 
-{% block dashboard_content %}
+{% block page_title %}{{ title }}{% endblock %}
+
+{% block content %}
 <div class="container" style="max-width: 800px;">
   <div class="card p-4 shadow-sm border-0">
     <div class="d-flex justify-content-between align-items-center mb-4">

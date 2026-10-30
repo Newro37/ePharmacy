@@ -1,13 +1,12 @@
-{% extends 'base_dashboard.html' %}
+{% extends 'base_with_sidebar.html' %}
 
-{% block title %}Verify Rx #{{ prescription.pk }} — Clinical Studio{% endblock %}
+{% block title %}Verify Rx #{{ prescription.pk }} — ePharmacy{% endblock %}
 
-{% block dashboard_content %}
+{% block page_title %}Verify Prescription #{{ prescription.pk }}{% endblock %}
+
+{% block content %}
 <div class="d-flex justify-content-between align-items-center mb-3">
-  <div>
-    <h3 class="fw-bold mb-0">Clinical Verification Studio: Rx #{{ prescription.pk }}</h3>
-    <span class="text-muted small">Patient: {{ prescription.user.email }} | Submitted: {{ prescription.created_at|date:"M d, Y h:i A" }}</span>
-  </div>
+  <span class="text-muted small">Patient: {{ prescription.user.email }} | Submitted: {{ prescription.created_at|date:"M d, Y h:i A" }}</span>
   <a href="{% url 'prescriptions:review_list' %}" class="btn btn-outline-secondary btn-sm">
     <i class="bi bi-arrow-left"></i> Back to Queue
   </a>

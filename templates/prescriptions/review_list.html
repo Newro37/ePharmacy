@@ -1,16 +1,13 @@
-{% extends 'base_dashboard.html' %}
+{% extends 'base_with_sidebar.html' %}
 
-{% block title %}Prescription Verification Queue — ePharmacy ERP{% endblock %}
+{% block title %}Prescription Verification Queue — ePharmacy{% endblock %}
 
-{% block dashboard_content %}
+{% block page_title %}Prescription Queue{% endblock %}
+
+{% block content %}
 <div class="d-flex justify-content-between align-items-center mb-4">
-  <div>
-    <h3 class="fw-bold mb-0"><i class="bi bi-file-medical text-success"></i> Clinical Prescription Queue</h3>
-    <p class="text-muted small">Licensed Pharmacist Review & Dispensation Authorization Desk</p>
-  </div>
-  <div>
-    <span class="badge bg-warning text-dark fs-6">{{ pending_list.count }} Pending Verification</span>
-  </div>
+  <h5 class="fw-bold mb-0">Pending Verification Queue</h5>
+  <span class="badge bg-warning text-dark">{{ pending_list.count }} Pending</span>
 </div>
 
 <!-- Pending Queue -->

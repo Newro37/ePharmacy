@@ -1,0 +1,60 @@
+<!-- Customer Sidebar Navigation -->
+<div class="sidebar-nav-section">
+  <div class="sidebar-nav-title">Main Menu</div>
+  <a href="{% url 'dashboard:customer_dashboard' %}" class="sidebar-nav-item">
+    <i class="bi bi-speedometer2"></i>
+    <span>Dashboard</span>
+  </a>
+  <a href="{% url 'catalog:medicine_list' %}" class="sidebar-nav-item">
+    <i class="bi bi-grid-3x3-gap"></i>
+    <span>Browse Medicines</span>
+  </a>
+  <a href="{% url 'cart:cart_detail' %}" class="sidebar-nav-item">
+    <i class="bi bi-cart3"></i>
+    <span>Shopping Cart</span>
+    {% if user.cart.get_item_count > 0 %}
+      <span class="nav-badge">{{ user.cart.get_item_count }}</span>
+    {% endif %}
+  </a>
+</div>
+
+<div class="sidebar-nav-section">
+  <div class="sidebar-nav-title">Orders & Prescriptions</div>
+  <a href="{% url 'cart:order_list' %}" class="sidebar-nav-item">
+    <i class="bi bi-box-seam"></i>
+    <span>My Orders</span>
+  </a>
+  <a href="{% url 'prescriptions:my_prescriptions' %}" class="sidebar-nav-item">
+    <i class="bi bi-file-medical"></i>
+    <span>My Prescriptions</span>
+  </a>
+  <a href="{% url 'prescriptions:upload' %}" class="sidebar-nav-item">
+    <i class="bi bi-cloud-upload"></i>
+    <span>Upload Prescription</span>
+  </a>
+</div>
+
+<div class="sidebar-nav-section">
+  <div class="sidebar-nav-title">Account</div>
+  <a href="{% url 'accounts:profile' %}" class="sidebar-nav-item">
+    <i class="bi bi-person-circle"></i>
+    <span>My Profile</span>
+  </a>
+  <a href="{% url 'notifications:list' %}" class="sidebar-nav-item">
+    <i class="bi bi-bell"></i>
+    <span>Notifications</span>
+    {% if user.unread_notifications_count > 0 %}
+      <span class="nav-badge">{{ user.unread_notifications_count }}</span>
+    {% endif %}
+  </a>
+</div>
+
+<div class="sidebar-nav-section">
+  <form action="{% url 'account_logout' %}" method="post" style="margin: 0;">
+    {% csrf_token %}
+    <button type="submit" class="sidebar-nav-item logout" style="width: 100%; border: none; background: transparent; cursor: pointer; text-align: left;">
+      <i class="bi bi-box-arrow-right"></i>
+      <span>Logout</span>
+    </button>
+  </form>
+</div>

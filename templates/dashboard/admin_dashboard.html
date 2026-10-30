@@ -1,0 +1,323 @@
+{% extends 'base_with_sidebar.html' %}
+{% block title %}Admin Dashboard — ePharmacy{% endblock %}
+{% block page_title %}Overview{% endblock %}
+
+{% block content %}
+
+<!-- ── User Stats ──────────────────────────────────────────────────── -->
+<p class="section-label">Users</p>
+<div class="row g-3 mb-4">
+  <div class="col-xl-3 col-md-6">
+    <div class="card stat-card p-3">
+      <div class="d-flex justify-content-between align-items-start">
+        <div>
+          <p class="stat-label mb-1">Customers</p>
+          <p class="stat-value mb-0">{{ total_customers }}</p>
+          <p class="stat-sub mt-1">Registered</p>
+        </div>
+        <i class="bi bi-person stat-icon"></i>
+      </div>
+    </div>
+  </div>
+  <div class="col-xl-3 col-md-6">
+    <div class="card stat-card p-3">
+      <div class="d-flex justify-content-between align-items-start">
+        <div>
+          <p class="stat-label mb-1">Pharmacists</p>
+          <p class="stat-value mb-0">{{ total_pharmacists }}</p>
+          <p class="stat-sub mt-1">Licensed staff</p>
+        </div>
+        <i class="bi bi-hospital stat-icon"></i>
+      </div>
+    </div>
+  </div>
+  <div class="col-xl-3 col-md-6">
+    <div class="card stat-card p-3">
+      <div class="d-flex justify-content-between align-items-start">
+        <div>
+          <p class="stat-label mb-1">Active Users</p>
+          <p class="stat-value mb-0">{{ active_users }}</p>
+          <p class="stat-sub mt-1">Currently active</p>
+        </div>
+        <i class="bi bi-check-circle stat-icon"></i>
+      </div>
+    </div>
+  </div>
+  <div class="col-xl-3 col-md-6">
+    <div class="card stat-card p-3">
+      <div class="d-flex justify-content-between align-items-start">
+        <div>
+          <p class="stat-label mb-1">New This Month</p>
+          <p class="stat-value mb-0">{{ new_users_this_month }}</p>
+          <p class="stat-sub mt-1">Registrations</p>
+        </div>
+        <i class="bi bi-person-plus stat-icon"></i>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── Revenue Stats ───────────────────────────────────────────────── -->
+<p class="section-label mt-2">Revenue</p>
+<div class="row g-3 mb-4">
+  <div class="col-xl-3 col-md-6">
+    <div class="card stat-card accent p-3">
+      <div class="d-flex justify-content-between align-items-start">
+        <div>
+          <p class="stat-label mb-1">Gross Revenue</p>
+          <p class="stat-value mb-0">৳{{ gross_revenue|floatformat:0 }}</p>
+          <p class="stat-sub mt-1">All-time</p>
+        </div>
+        <i class="bi bi-cash-stack stat-icon"></i>
+      </div>
+    </div>
+  </div>
+  <div class="col-xl-3 col-md-6">
+    <div class="card stat-card p-3">
+      <div class="d-flex justify-content-between align-items-start">
+        <div>
+          <p class="stat-label mb-1">Today</p>
+          <p class="stat-value mb-0">৳{{ revenue_today|floatformat:0 }}</p>
+          <p class="stat-sub mt-1">Today's sales</p>
+        </div>
+        <i class="bi bi-calendar-check stat-icon"></i>
+      </div>
+    </div>
+  </div>
+  <div class="col-xl-3 col-md-6">
+    <div class="card stat-card p-3">
+      <div class="d-flex justify-content-between align-items-start">
+        <div>
+          <p class="stat-label mb-1">This Week</p>
+          <p class="stat-value mb-0">৳{{ revenue_this_week|floatformat:0 }}</p>
+          <p class="stat-sub mt-1">7-day</p>
+        </div>
+        <i class="bi bi-graph-up stat-icon"></i>
+      </div>
+    </div>
+  </div>
+  <div class="col-xl-3 col-md-6">
+    <div class="card stat-card p-3">
+      <div class="d-flex justify-content-between align-items-start">
+        <div>
+          <p class="stat-label mb-1">This Month</p>
+          <p class="stat-value mb-0">৳{{ revenue_this_month|floatformat:0 }}</p>
+          <p class="stat-sub mt-1">Monthly</p>
+        </div>
+        <i class="bi bi-calendar-month stat-icon"></i>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── Main content + sidebar ─────────────────────────────────────── -->
+<div class="row g-3">
+  <div class="col-lg-8">
+
+    <!-- Orders summary -->
+    <div class="card mb-3">
+      <div class="card-header d-flex justify-content-between align-items-center">
+        <h6>Orders</h6>
+        <div class="d-flex gap-2">
+          <a href="{% url 'dashboard:orders' %}" class="btn btn-sm btn-outline-secondary">All Orders</a>
+          <a href="{% url 'dashboard:sales_report' %}" class="btn btn-sm btn-outline-secondary">Sales Report</a>
+        </div>
+      </div>
+      <div class="card-body">
+      <div class="row g-2 mb-3">
+          <div class="col-3 text-center py-3" style="border-right: 1px solid var(--border);">
+            <p class="fw-bold fs-4 mb-0">{{ total_orders }}</p>
+            <p class="stat-sub mb-0">Total</p>
+          </div>
+          <div class="col-3 text-center py-3" style="border-right: 1px solid var(--border);">
+            <p class="fw-bold fs-4 mb-0">{{ pending_orders }}</p>
+            <p class="stat-sub mb-0">Pending</p>
+          </div>
+          <div class="col-3 text-center py-3" style="border-right: 1px solid var(--border);">
+            <p class="fw-bold fs-4 mb-0">{{ processing_orders }}</p>
+            <p class="stat-sub mb-0">Processing</p>
+          </div>
+          <div class="col-3 text-center py-3">
+            <p class="fw-bold fs-4 mb-0">{{ completed_orders }}</p>
+            <p class="stat-sub mb-0">Delivered</p>
+          </div>
+        </div>
+        <div class="row g-3 pt-2" style="border-top: 1px solid var(--border);">
+          <div class="col-4">
+            <p class="stat-sub mb-0">Avg Order Value</p>
+            <p class="fw-semibold mb-0">৳{{ avg_order_value|floatformat:2 }}</p>
+          </div>
+          <div class="col-4">
+            <p class="stat-sub mb-0">Online Payments</p>
+            <p class="fw-semibold mb-0">৳{{ online_revenue|floatformat:2 }}</p>
+          </div>
+          <div class="col-4">
+            <p class="stat-sub mb-0">Cash on Delivery</p>
+            <p class="fw-semibold mb-0">৳{{ cod_revenue|floatformat:2 }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Recent orders table -->
+    <div class="card">
+      <div class="card-header"><h6>Recent Orders</h6></div>
+      <div class="card-body p-0">
+        {% if recent_orders %}
+          <div class="table-responsive">
+            <table class="table mb-0">
+              <thead>
+                <tr>
+                  <th>ID</th><th>Customer</th><th>Date</th><th>Amount</th><th>Status</th><th></th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for order in recent_orders %}
+                  <tr>
+                    <td class="fw-semibold">#{{ order.pk }}</td>
+                    <td>{{ order.user.email|truncatechars:24 }}</td>
+                    <td>{{ order.created_at|date:"M d, H:i" }}</td>
+                    <td class="fw-semibold">৳{{ order.total_amount }}</td>
+                    <td>
+                      {% if order.status == 'delivered' %}
+                        <span class="badge status-delivered">Delivered</span>
+                      {% elif order.status == 'cancelled' %}
+                        <span class="badge status-cancelled">Cancelled</span>
+                      {% elif order.status == 'shipped' %}
+                        <span class="badge status-shipped">Shipped</span>
+                      {% elif order.status == 'processing' %}
+                        <span class="badge status-processing">Processing</span>
+                      {% else %}
+                        <span class="badge status-pending">Pending</span>
+                      {% endif %}
+                    </td>
+                    <td><a href="{% url 'cart:order_detail' order_id=order.pk %}" class="btn btn-sm btn-outline-secondary">View</a></td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        {% else %}
+          <div class="text-center py-5 text-muted">
+            <i class="bi bi-inbox fs-1 d-block mb-2"></i>No orders yet.
+          </div>
+        {% endif %}
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Right panel -->
+  <div class="col-lg-4">
+
+    <!-- Quick actions -->
+    <div class="card mb-3">
+      <div class="card-header"><h6>Quick Actions</h6></div>
+      <div class="card-body p-2">
+        <a href="{% url 'dashboard:users' %}"         class="btn btn-outline-secondary w-100 mb-1 text-start"><i class="bi bi-people me-2"></i>Manage Users</a>
+        <a href="{% url 'dashboard:staff_add' %}"     class="btn btn-outline-secondary w-100 mb-1 text-start"><i class="bi bi-person-plus me-2"></i>Add Pharmacist</a>
+        <a href="{% url 'dashboard:medicine_list' %}" class="btn btn-outline-secondary w-100 mb-1 text-start"><i class="bi bi-capsule me-2"></i>Manage Medicines</a>
+        <a href="{% url 'dashboard:medicine_create' %}" class="btn btn-outline-secondary w-100 mb-1 text-start"><i class="bi bi-plus me-2"></i>Add Medicine</a>
+        <a href="{% url 'prescriptions:review_list' %}" class="btn btn-outline-secondary w-100 mb-1 text-start position-relative">
+          <i class="bi bi-file-medical me-2"></i>Prescriptions
+          {% if pending_prescriptions > 0 %}
+            <span class="nav-badge ms-1">{{ pending_prescriptions }}</span>
+          {% endif %}
+        </a>
+        <a href="{% url 'dashboard:sales_report' %}"     class="btn btn-outline-secondary w-100 mb-1 text-start"><i class="bi bi-graph-up me-2"></i>Sales Report</a>
+        <a href="{% url 'dashboard:inventory_report' %}" class="btn btn-outline-secondary w-100 text-start"><i class="bi bi-clipboard-data me-2"></i>Inventory Report</a>
+      </div>
+    </div>
+
+    <!-- Inventory summary -->
+    <div class="card mb-3">
+      <div class="card-header d-flex justify-content-between align-items-center">
+        <h6>Inventory</h6>
+        <a href="{% url 'dashboard:inventory_report' %}" class="btn btn-sm btn-outline-secondary">Report</a>
+      </div>
+      <div class="card-body p-0">
+        <div class="list-group list-group-flush" style="font-size: 0.8125rem;">
+          <div class="list-group-item d-flex justify-content-between py-2">
+            <span class="text-muted">Total Medicines</span>
+            <span class="fw-semibold">{{ total_medicines }}</span>
+          </div>
+          <div class="list-group-item d-flex justify-content-between py-2">
+            <span class="text-muted">Active</span>
+            <span class="fw-semibold">{{ active_medicines }}</span>
+          </div>
+          <div class="list-group-item d-flex justify-content-between py-2">
+            <span class="text-muted">Low Stock</span>
+            <span class="fw-semibold">{{ low_stock_count }}</span>
+          </div>
+          <div class="list-group-item d-flex justify-content-between py-2">
+            <span class="text-muted">Expired</span>
+            <span class="fw-semibold">{{ expired_medicines }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Prescriptions summary -->
+    <div class="card mb-3">
+      <div class="card-header d-flex justify-content-between align-items-center">
+        <h6>Prescriptions</h6>
+        <a href="{% url 'prescriptions:review_list' %}" class="btn btn-sm btn-outline-secondary">View</a>
+      </div>
+      <div class="card-body p-0">
+        <div class="list-group list-group-flush" style="font-size: 0.8125rem;">
+          <div class="list-group-item d-flex justify-content-between py-2">
+            <span class="text-muted">Total</span>
+            <span class="fw-semibold">{{ total_prescriptions }}</span>
+          </div>
+          <div class="list-group-item d-flex justify-content-between py-2">
+            <span class="text-muted">Pending Review</span>
+            <span class="fw-semibold">{{ pending_prescriptions }}</span>
+          </div>
+          <div class="list-group-item d-flex justify-content-between py-2">
+            <span class="text-muted">Approved</span>
+            <span class="fw-semibold">{{ approved_prescriptions }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Critical stock list -->
+    {% if low_stock_medicines %}
+    <div class="card mb-3">
+      <div class="card-header"><h6>Critical Stock</h6></div>
+      <div class="card-body p-0">
+        <ul class="list-group list-group-flush" style="font-size: 0.8125rem;">
+          {% for med in low_stock_medicines %}
+            <li class="list-group-item d-flex justify-content-between align-items-center py-2">
+              <div>
+                <span class="fw-semibold d-block">{{ med.name }}</span>
+                <span class="stat-sub">{{ med.dosage }}</span>
+              </div>
+              <span class="fw-semibold">{{ med.stock }}</span>
+            </li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+    {% endif %}
+
+    <!-- Recent registrations -->
+    {% if recent_users %}
+    <div class="card">
+      <div class="card-header"><h6>Recent Registrations</h6></div>
+      <div class="card-body p-0">
+        <ul class="list-group list-group-flush" style="font-size: 0.8125rem;">
+          {% for u in recent_users %}
+            <li class="list-group-item py-2">
+              <span class="fw-semibold d-block">{{ u.email|truncatechars:28 }}</span>
+              <span class="stat-sub">{{ u.date_joined|timesince }} ago</span>
+            </li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+    {% endif %}
+
+  </div>
+</div>
+{% endblock %}

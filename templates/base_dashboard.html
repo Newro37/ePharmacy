@@ -35,7 +35,7 @@
 <body>
   <!-- Top Bar -->
   <nav class="navbar navbar-dark bg-dark sticky-top px-3 shadow">
-    <a class="navbar-brand fw-bold d-flex align-items-center gap-2" href="{% url 'dashboard:home' %}">
+    <a class="navbar-brand fw-bold d-flex align-items-center gap-2" href="{% if user.is_admin_user %}{% url 'dashboard:admin_dashboard' %}{% elif user.is_pharmacist %}{% url 'dashboard:pharmacist_dashboard' %}{% else %}{% url 'dashboard:home' %}{% endif %}">
       <i class="bi bi-hospital text-warning"></i>
       <span>ePharmacy Operations ERP</span>
       {% if user.is_admin_user %}
@@ -62,30 +62,63 @@
       <!-- Sidebar -->
       <nav class="col-md-3 col-lg-2 d-md-block sidebar p-3">
         <ul class="nav flex-column">
-          <li class="nav-item">
-            <a class="nav-link {% if request.resolver_match.url_name == 'home' %}active{% endif %}" href="{% url 'dashboard:home' %}">
-              <i class="bi bi-speedometer2 me-2"></i> Executive Overview
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link {% if 'prescriptions' in request.path %}active{% endif %}" href="{% url 'prescriptions:review_list' %}">
-              <i class="bi bi-file-medical me-2"></i> Prescription Queue
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link {% if 'medicines' in request.path %}active{% endif %}" href="{% url 'dashboard:medicine_list' %}">
-              <i class="bi bi-capsule me-2"></i> Inventory & Stock
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link {% if 'orders' in request.path %}active{% endif %}" href="{% url 'dashboard:orders' %}">
-              <i class="bi bi-box-seam me-2"></i> Orders Pipeline
-            </a>
-          </li>
           {% if user.is_admin_user %}
+            <!-- Super Admin Sidebar -->
+            <li class="nav-item">
+              <a class="nav-link {% if request.resolver_match.url_name == 'admin_dashboard' %}active{% endif %}" href="{% url 'dashboard:admin_dashboard' %}">
+                <i class="bi bi-speedometer2 me-2"></i> Admin Overview
+              </a>
+            </li>
             <li class="nav-item">
               <a class="nav-link {% if 'users' in request.path %}active{% endif %}" href="{% url 'dashboard:users' %}">
-                <i class="bi bi-people me-2"></i> User & Staff RBAC
+                <i class="bi bi-people me-2"></i> User Management
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link {% if 'prescriptions' in request.path %}active{% endif %}" href="{% url 'prescriptions:review_list' %}">
+                <i class="bi bi-file-medical me-2"></i> Prescriptions
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link {% if 'medicines' in request.path %}active{% endif %}" href="{% url 'dashboard:medicine_list' %}">
+                <i class="bi bi-capsule me-2"></i> Medicine Catalog
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link {% if 'orders' in request.path %}active{% endif %}" href="{% url 'dashboard:orders' %}">
+                <i class="bi bi-box-seam me-2"></i> Order Management
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link {% if 'sales_report' in request.path %}active{% endif %}" href="{% url 'dashboard:sales_report' %}">
+                <i class="bi bi-graph-up me-2"></i> Sales Reports
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link {% if 'inventory_report' in request.path %}active{% endif %}" href="{% url 'dashboard:inventory_report' %}">
+                <i class="bi bi-clipboard-data me-2"></i> Inventory Report
+              </a>
+            </li>
+          {% elif user.is_pharmacist %}
+            <!-- Pharmacist Sidebar -->
+            <li class="nav-item">
+              <a class="nav-link {% if request.resolver_match.url_name == 'pharmacist_dashboard' %}active{% endif %}" href="{% url 'dashboard:pharmacist_dashboard' %}">
+                <i class="bi bi-speedometer2 me-2"></i> Pharmacist Overview
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link {% if 'prescriptions' in request.path %}active{% endif %}" href="{% url 'prescriptions:review_list' %}">
+                <i class="bi bi-file-medical me-2"></i> Prescription Queue
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link {% if 'medicines' in request.path %}active{% endif %}" href="{% url 'dashboard:medicine_list' %}">
+                <i class="bi bi-capsule me-2"></i> Inventory & Stock
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link {% if 'orders' in request.path %}active{% endif %}" href="{% url 'dashboard:orders' %}">
+                <i class="bi bi-box-seam me-2"></i> Orders Pipeline
               </a>
             </li>
           {% endif %}

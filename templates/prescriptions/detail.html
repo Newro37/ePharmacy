@@ -1,9 +1,11 @@
-{% extends 'base.html' %}
+{% extends 'base_with_sidebar.html' %}
 
 {% block title %}Prescription #{{ prescription.pk }} — ePharmacy{% endblock %}
 
+{% block page_title %}Prescription #{{ prescription.pk }}{% endblock %}
+
 {% block content %}
-<div class="container" style="max-width: 800px;">
+<div style="max-width: 800px;">
   <div class="card p-4 shadow-sm border-0">
     <div class="d-flex justify-content-between align-items-center mb-3">
       <h4 class="fw-bold mb-0">Prescription Record #{{ prescription.pk }}</h4>

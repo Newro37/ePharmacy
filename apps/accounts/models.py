@@ -22,7 +22,7 @@ class CustomUser(AbstractUser):
         return self.role == self.Role.PHARMACIST
 
     def is_admin_user(self):
-        return self.role == self.Role.ADMIN or self.is_staff
+        return self.role == self.Role.ADMIN
 
     @property
     def unread_notifications_count(self):

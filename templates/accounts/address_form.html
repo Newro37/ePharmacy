@@ -1,9 +1,11 @@
-{% extends 'base.html' %}
+{% extends 'base_with_sidebar.html' %}
 
 {% block title %}{{ title }} — ePharmacy{% endblock %}
 
+{% block page_title %}{{ title }}{% endblock %}
+
 {% block content %}
-<div class="container" style="max-width: 600px;">
+<div style="max-width: 600px;">
   <div class="card p-4 shadow-sm border-0">
     <h4 class="fw-bold mb-4">{{ title }}</h4>
     <form method="post">

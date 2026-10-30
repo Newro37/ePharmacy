@@ -1,0 +1,78 @@
+<!-- Pharmacist Sidebar Navigation -->
+<div class="sidebar-nav-section">
+  <div class="sidebar-nav-title">Main Menu</div>
+  <a href="{% url 'dashboard:pharmacist_dashboard' %}" class="sidebar-nav-item">
+    <i class="bi bi-speedometer2"></i>
+    <span>Dashboard</span>
+  </a>
+</div>
+
+<div class="sidebar-nav-section">
+  <div class="sidebar-nav-title">Prescription Management</div>
+  <a href="{% url 'prescriptions:review_list' %}" class="sidebar-nav-item">
+    <i class="bi bi-file-medical"></i>
+    <span>Prescription Queue</span>
+    {% with pending_count=user.get_pending_prescriptions_count|default:0 %}
+      {% if pending_count > 0 %}
+        <span class="nav-badge">{{ pending_count }}</span>
+      {% endif %}
+    {% endwith %}
+  </a>
+</div>
+
+<div class="sidebar-nav-section">
+  <div class="sidebar-nav-title">Inventory Management</div>
+  <a href="{% url 'dashboard:medicine_list' %}" class="sidebar-nav-item">
+    <i class="bi bi-capsule"></i>
+    <span>Medicine Inventory</span>
+  </a>
+  <a href="{% url 'dashboard:medicine_create' %}" class="sidebar-nav-item">
+    <i class="bi bi-plus-circle"></i>
+    <span>Add Medicine</span>
+  </a>
+</div>
+
+<div class="sidebar-nav-section">
+  <div class="sidebar-nav-title">Order Management</div>
+  <a href="{% url 'dashboard:orders' %}" class="sidebar-nav-item">
+    <i class="bi bi-box-seam"></i>
+    <span>Order Pipeline</span>
+  </a>
+  <a href="{% url 'dashboard:orders' %}?status=pending" class="sidebar-nav-item">
+    <i class="bi bi-hourglass-split"></i>
+    <span>Pending Orders</span>
+  </a>
+  <a href="{% url 'dashboard:orders' %}?status=processing" class="sidebar-nav-item">
+    <i class="bi bi-arrow-repeat"></i>
+    <span>Processing Orders</span>
+  </a>
+  <a href="{% url 'dashboard:orders' %}?status=delivered" class="sidebar-nav-item">
+    <i class="bi bi-check-circle"></i>
+    <span>Completed Orders</span>
+  </a>
+</div>
+
+<div class="sidebar-nav-section">
+  <div class="sidebar-nav-title">Account</div>
+  <a href="{% url 'accounts:profile' %}" class="sidebar-nav-item">
+    <i class="bi bi-person-circle"></i>
+    <span>My Profile</span>
+  </a>
+  <a href="{% url 'notifications:list' %}" class="sidebar-nav-item">
+    <i class="bi bi-bell"></i>
+    <span>Notifications</span>
+    {% if user.unread_notifications_count > 0 %}
+      <span class="nav-badge">{{ user.unread_notifications_count }}</span>
+    {% endif %}
+  </a>
+</div>
+
+<div class="sidebar-nav-section">
+  <form action="{% url 'account_logout' %}" method="post" style="margin: 0;">
+    {% csrf_token %}
+    <button type="submit" class="sidebar-nav-item logout" style="width: 100%; border: none; background: transparent; cursor: pointer; text-align: left;">
+      <i class="bi bi-box-arrow-right"></i>
+      <span>Logout</span>
+    </button>
+  </form>
+</div>

@@ -1,0 +1,105 @@
+<!-- Super Admin Sidebar Navigation -->
+<div class="sidebar-nav-section">
+  <div class="sidebar-nav-title">Main Menu</div>
+  <a href="{% url 'dashboard:admin_dashboard' %}" class="sidebar-nav-item">
+    <i class="bi bi-speedometer2"></i>
+    <span>Dashboard</span>
+  </a>
+</div>
+
+<div class="sidebar-nav-section">
+  <div class="sidebar-nav-title">User Management</div>
+  <a href="{% url 'dashboard:users' %}" class="sidebar-nav-item">
+    <i class="bi bi-people"></i>
+    <span>All Users</span>
+  </a>
+  <a href="{% url 'dashboard:users' %}?role=customer" class="sidebar-nav-item">
+    <i class="bi bi-person"></i>
+    <span>Customers</span>
+  </a>
+  <a href="{% url 'dashboard:users' %}?role=pharmacist" class="sidebar-nav-item">
+    <i class="bi bi-hospital"></i>
+    <span>Pharmacists</span>
+  </a>
+  <a href="{% url 'dashboard:staff_add' %}" class="sidebar-nav-item">
+    <i class="bi bi-person-plus"></i>
+    <span>Add Pharmacist</span>
+  </a>
+</div>
+
+<div class="sidebar-nav-section">
+  <div class="sidebar-nav-title">Inventory Management</div>
+  <a href="{% url 'dashboard:medicine_list' %}" class="sidebar-nav-item">
+    <i class="bi bi-capsule"></i>
+    <span>Medicine Catalog</span>
+  </a>
+  <a href="{% url 'dashboard:medicine_create' %}" class="sidebar-nav-item">
+    <i class="bi bi-plus-circle"></i>
+    <span>Add Medicine</span>
+  </a>
+  <a href="{% url 'dashboard:medicine_list' %}?stock=low" class="sidebar-nav-item">
+    <i class="bi bi-exclamation-triangle"></i>
+    <span>Low Stock Alerts</span>
+  </a>
+</div>
+
+<div class="sidebar-nav-section">
+  <div class="sidebar-nav-title">Order Management</div>
+  <a href="{% url 'dashboard:orders' %}" class="sidebar-nav-item">
+    <i class="bi bi-box-seam"></i>
+    <span>All Orders</span>
+  </a>
+  <a href="{% url 'dashboard:orders' %}?status=pending" class="sidebar-nav-item">
+    <i class="bi bi-hourglass-split"></i>
+    <span>Pending Orders</span>
+  </a>
+  <a href="{% url 'dashboard:orders' %}?status=delivered" class="sidebar-nav-item">
+    <i class="bi bi-check-circle"></i>
+    <span>Completed Orders</span>
+  </a>
+</div>
+
+<div class="sidebar-nav-section">
+  <div class="sidebar-nav-title">Prescriptions</div>
+  <a href="{% url 'prescriptions:review_list' %}" class="sidebar-nav-item">
+    <i class="bi bi-file-medical"></i>
+    <span>Prescription Monitor</span>
+  </a>
+</div>
+
+<div class="sidebar-nav-section">
+  <div class="sidebar-nav-title">Reports & Analytics</div>
+  <a href="{% url 'dashboard:sales_report' %}" class="sidebar-nav-item">
+    <i class="bi bi-graph-up"></i>
+    <span>Sales Report</span>
+  </a>
+  <a href="{% url 'dashboard:inventory_report' %}" class="sidebar-nav-item">
+    <i class="bi bi-clipboard-data"></i>
+    <span>Inventory Report</span>
+  </a>
+</div>
+
+<div class="sidebar-nav-section">
+  <div class="sidebar-nav-title">Account</div>
+  <a href="{% url 'accounts:profile' %}" class="sidebar-nav-item">
+    <i class="bi bi-person-circle"></i>
+    <span>My Profile</span>
+  </a>
+  <a href="{% url 'notifications:list' %}" class="sidebar-nav-item">
+    <i class="bi bi-bell"></i>
+    <span>Notifications</span>
+    {% if user.unread_notifications_count > 0 %}
+      <span class="nav-badge">{{ user.unread_notifications_count }}</span>
+    {% endif %}
+  </a>
+</div>
+
+<div class="sidebar-nav-section">
+  <form action="{% url 'account_logout' %}" method="post" style="margin: 0;">
+    {% csrf_token %}
+    <button type="submit" class="sidebar-nav-item logout" style="width: 100%; border: none; background: transparent; cursor: pointer; text-align: left;">
+      <i class="bi bi-box-arrow-right"></i>
+      <span>Logout</span>
+    </button>
+  </form>
+</div>

@@ -57,11 +57,17 @@
               </a>
             </li>
 
-            <!-- Staff Desks Quick Links -->
-            {% if user.is_pharmacist or user.is_admin_user %}
+            <!-- Role-Based Dashboard Links -->
+            {% if user.is_admin_user %}
               <li class="nav-item">
-                <a class="btn btn-sm btn-outline-light d-flex align-items-center gap-1" href="{% url 'dashboard:home' %}">
-                  <i class="bi bi-speedometer2"></i> Operations ERP
+                <a class="btn btn-sm btn-outline-light d-flex align-items-center gap-1" href="{% url 'dashboard:admin_dashboard' %}">
+                  <i class="bi bi-shield-check"></i> Admin Dashboard
+                </a>
+              </li>
+            {% elif user.is_pharmacist %}
+              <li class="nav-item">
+                <a class="btn btn-sm btn-outline-light d-flex align-items-center gap-1" href="{% url 'dashboard:pharmacist_dashboard' %}">
+                  <i class="bi bi-hospital"></i> Pharmacist Desk
                 </a>
               </li>
             {% endif %}
@@ -72,6 +78,9 @@
                 <i class="bi bi-person-circle fs-5"></i> {{ user.first_name|default:user.email }}
               </a>
               <ul class="dropdown-menu dropdown-menu-end shadow">
+                {% if user.is_customer %}
+                  <li><a class="dropdown-item" href="{% url 'dashboard:customer_dashboard' %}"><i class="bi bi-speedometer2"></i> My Dashboard</a></li>
+                {% endif %}
                 <li><a class="dropdown-item" href="{% url 'accounts:profile' %}"><i class="bi bi-person"></i> My Profile</a></li>
                 <li><a class="dropdown-item" href="{% url 'cart:order_list' %}"><i class="bi bi-box-seam"></i> My Orders</a></li>
                 <li><a class="dropdown-item" href="{% url 'prescriptions:my_prescriptions' %}"><i class="bi bi-file-medical"></i> My Prescriptions</a></li>
