@@ -54,12 +54,14 @@ The test suite contains **31 comprehensive unit tests** achieving **87% code cov
 .\venv\Scripts\coverage.exe report -m
 ```
 
-## 5. Design Patterns Implemented
-1. **Repository Pattern (Structural):** `MedicineQuerySet.as_manager()` in `apps/catalog/models.py`.
-2. **Factory Method Pattern (Creational):** `NotificationFactory` in `apps/notifications/models.py`.
-3. **Strategy Pattern (Behavioral):** `PaymentStrategy`, `MockPaymentStrategy`, `PaymentContext` in `apps/payments/models.py`.
-4. **Observer Pattern (Behavioral):** Post-save Django signal listeners in `apps/cart/signals.py` and `apps/prescriptions/signals.py`.
-5. **Singleton Pattern (Creational):** Django thread-safe database connection pool.
+## 5. Design Patterns Implemented (Software Engineering Best Practices)
+The system implements 5 proven GoF design patterns for maintainability:
+
+1. **Repository Pattern (Structural):** `MedicineQuerySet.as_manager()` in `apps/catalog/models.py` - encapsulates data access logic.
+2. **Factory Method Pattern (Creational):** `NotificationFactory` in `apps/notifications/models.py` - centralizes object creation.
+3. **Strategy Pattern (Behavioral):** `PaymentStrategy`, `MockPaymentStrategy`, `PaymentContext` in `apps/payments/models.py` - enables flexible payment processing.
+4. **Observer Pattern (Behavioral):** Post-save Django signal listeners in `apps/cart/signals.py` and `apps/prescriptions/signals.py` - decouples event handling.
+5. **Singleton Pattern (Creational):** Django thread-safe database connection pool - ensures single instance.
 
 ## 6. Project Documentation
 - **Academic Project Report:** [`PROJECT_REPORT.md`](PROJECT_REPORT.md) (All 13 chapters, SRS, SDLC, UML, testing, reflection essay, learning log).
