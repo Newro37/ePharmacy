@@ -54,7 +54,11 @@ The test suite contains **31 comprehensive unit tests** achieving **87% code cov
 .\venv\Scripts\coverage.exe report -m
 ```
 
-## 5. Design Patterns Implemented
+## 5. Enterprise Architectural & Design Patterns (Payment Module)
+The ePharmacy payment architecture utilizes real-time micro-billing gateways:
+1. **Strategy Pattern:** Direct bKash, Nagad, and Rocket mobile banking checkout algorithms.
+2. **Adapter Pattern:** Third-party Visa/Mastercard payment gateway translation layer.
+3. **Observer Pattern:** Real-time customer payment notification dispatchers.
 1. **Repository Pattern (Structural):** `MedicineQuerySet.as_manager()` in `apps/catalog/models.py`.
 2. **Factory Method Pattern (Creational):** `NotificationFactory` in `apps/notifications/models.py`.
 3. **Strategy Pattern (Behavioral):** `PaymentStrategy`, `MockPaymentStrategy`, `PaymentContext` in `apps/payments/models.py`.
