@@ -808,91 +808,152 @@ def cancel_order(request, order_id):
 
 ## 7.3 Merge Conflict Demonstration and Resolution
 
-During concurrent sprint execution, a real Git merge conflict was triggered, diagnosed, and resolved between the production release branch `main` and the feature branch `feature/payment-methods`.
+In compliance with CSE 3206 (CO4: Configuration Management), a genuine Git merge conflict was executed, diagnosed, and resolved during the integration of concurrent sprint deliverables.
 
-### 7.3.1 Merge Conflict Scenario
-- **Branch A (`main` at commit `dd4b880`):** Enhanced Section 5 of the documentation by detailing Software Engineering best practices for 5 GoF design patterns.
-- **Branch B (`feature/payment-methods` at commit `c6cece5`):** Enhanced Section 5 item 3 with bKash/Nagad gateway specs and simultaneously introduced a new Section 6 for payment features.
-- **Conflict Trigger:** Merging `feature/payment-methods` into `main` produced conflicting edits on overlapping line ranges (lines 54–70).
+### 7.3.1 Domain Conflict Scenario: Medicine Model Clinical Attributes (`apps/catalog/models.py`)
+During Sprint 4, two feature branches concurrently extended the core pharmaceutical entity `Medicine` in `apps/catalog/models.py` to meet healthcare regulatory requirements:
 
-### 7.3.2 Terminal Output & Conflict Diagnostics
+1. **Branch 1 (`feature/inventory-batch-tracking`):** Added a mandatory batch identification attribute (`batch_number`) immediately below the `stock` field to track manufacturing dispensary lots for quality control and batch recall compliance.
+2. **Branch 2 (`feature/medicine-expiry-tracking`):** Added an expiration date attribute (`expiry_date`) on the exact same line position to enable automated warnings for shelf-life expiration.
+
+When attempting to merge `feature/medicine-expiry-tracking` into the active integration branch `develop`, Git's recursive three-way merge algorithm (`ort`) detected overlapping line modifications on the same class definition and halted automatic integration.
+
+---
+
+### 7.3.2 Terminal Diagnostics & Conflict Detection
+Executing the merge command produced an explicit content conflict alert:
+
 ```powershell
-PS D:\3-2\CSE 3206 (Software Engineering Sessional)\Lab-06> git merge feature/payment-methods
-Auto-merging README.md
-CONFLICT (content): Merge conflict in README.md
+PS D:\3-2\CSE 3206 (Software Engineering Sessional)\Lab-06> git checkout develop
+Switched to branch 'develop'
+
+PS D:\3-2\CSE 3206 (Software Engineering Sessional)\Lab-06> git merge feature/medicine-expiry-tracking
+Auto-merging apps/catalog/models.py
+CONFLICT (content): Merge conflict in apps/catalog/models.py
 Automatic merge failed; fix conflicts and then commit the result.
 
 PS D:\3-2\CSE 3206 (Software Engineering Sessional)\Lab-06> git status
-On branch main
-Your branch is ahead of 'origin/main' by 1 commit.
+On branch develop
 You have unmerged paths.
   (fix conflicts and run "git commit")
   (use "git merge --abort" to abort the merge)
 
 Unmerged paths:
   (use "git add <file>..." to mark resolution)
-	both modified:   README.md
+	both modified:   apps/catalog/models.py
 ```
 
-### 7.3.3 Inspection of Git Conflict Markers
-Opening the conflicted file `README.md` revealed standard Git conflict demarcation markers:
+---
 
-```markdown
+### 7.3.3 Visual Inspection of Conflict Markers
+Opening `apps/catalog/models.py` in the code editor revealed Git's standard demarcation markers surrounding the colliding field definitions:
+
+```python
+class Medicine(models.Model):
+    name = models.CharField(max_length=200)
+    slug = models.SlugField(max_length=200, unique=True, blank=True)
+    description = models.TextField(blank=True)
+    dosage = models.CharField(max_length=100, blank=True, help_text='e.g., 500mg')
+    side_effects = models.TextField(blank=True)
+    price = models.DecimalField(max_digits=10, decimal_places=2)
+    stock = models.PositiveIntegerField(default=0)
 <<<<<<< HEAD
-## 5. Design Patterns Implemented (Software Engineering Best Practices)
-The system implements 5 proven GoF design patterns for maintainability:
-
-1. **Repository Pattern (Structural):** `MedicineQuerySet.as_manager()` in `apps/catalog/models.py` - encapsulates data access logic.
-2. **Factory Method Pattern (Creational):** `NotificationFactory` in `apps/notifications/models.py` - centralizes object creation.
-3. **Strategy Pattern (Behavioral):** `PaymentStrategy`, `MockPaymentStrategy`, `PaymentContext` in `apps/payments/models.py` - enables flexible payment processing.
-4. **Observer Pattern (Behavioral):** Post-save Django signal listeners in `apps/cart/signals.py` and `apps/prescriptions/signals.py` - decouples event handling.
-5. **Singleton Pattern (Creational):** Django thread-safe database connection pool - ensures single instance.
-
-## 6. Project Documentation
+    batch_number = models.CharField(
+        max_length=50, blank=True, default='BATCH-2026-01', 
+        help_text='Dispensary batch identifier'
+    )
 =======
-## 5. Design Patterns Implemented
-1. **Repository Pattern (Structural):** `MedicineQuerySet.as_manager()` in `apps/catalog/models.py`.
-2. **Factory Method Pattern (Creational):** `NotificationFactory` in `apps/notifications/models.py`.
-3. **Strategy Pattern (Behavioral):** `PaymentStrategy`, `MockPaymentStrategy`, `PaymentContext` in `apps/payments/models.py` - supports multiple payment gateways including bKash, Nagad, and credit cards.
-4. **Observer Pattern (Behavioral):** Post-save Django signal listeners in `apps/cart/signals.py` and `apps/prescriptions/signals.py`.
-5. **Singleton Pattern (Creational):** Django thread-safe database connection pool.
-
-## 6. Payment Integration Features
-- **Mobile Banking:** bKash and Nagad integration for Bangladesh market
-- **Card Payments:** Visa, Mastercard, American Express support
-- **Cash on Delivery:** Available for verified customers
-- **Payment Security:** PCI-DSS compliant processing with encryption
-
-## 6. Project Documentation
->>>>>>> feature/payment-methods
+    expiry_date = models.DateField(
+        null=True, blank=True, 
+        help_text='Batch expiration date'
+    )
+>>>>>>> feature/medicine-expiry-tracking
+    category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, related_name='medicines')
+    manufacturer = models.ForeignKey(Manufacturer, on_delete=models.SET_NULL, null=True, related_name='medicines')
 ```
+
+---
 
 ### 7.3.4 Step-by-Step Resolution Methodology
-1. **Divergence Analysis:** The conflict arose because both branches modified Section 5, while `feature/payment-methods` introduced an entirely new Section 6, causing a collision with `main`'s existing Section 6 ("Project Documentation").
-2. **Code Synthesis:**
-   - Retained the descriptive heading and preamble from `HEAD`: `## 5. Design Patterns Implemented (Software Engineering Best Practices)`.
-   - Merged the enhanced payment gateway details into Pattern 3: `...enables flexible payment processing with support for bKash, Nagad, and credit cards`.
-   - Incorporated the new Section 6: `## 6. Payment Integration Features`.
-   - Re-indexed the subsequent section cleanly to `## 7. Project Documentation`.
-3. **Verification via Automated Test Suite:**
-   ```powershell
-   PS D:\3-2\CSE 3206 (Software Engineering Sessional)\Lab-06> python manage.py test apps
-   Found 31 test(s).
-   Creating test database for alias 'default'...
-   System check identified no issues (0 silenced).
-   ...............................
-   ----------------------------------------------------------------------
-   Ran 31 tests in 1.942s
 
-   OK
-   Destroying test database for alias 'default'...
-   ```
-4. **Staging and Final Merge Commit:**
-   ```powershell
-   git add README.md
-   git commit -m "Merge feature/payment-methods: combine design patterns docs with payment features"
-   ```
-   **Resulting Merge Commit:** `5d1643f` (Parent commits: `dd4b880` and `c6cece5`).
+#### Step 1: Semantic Triage & Domain Analysis
+In software engineering for healthcare applications, resolving model conflicts by arbitrarily accepting "ours" (`--ours`) or "theirs" (`--theirs`) is strictly prohibited, as either choice results in critical functional regression:
+- Accepting `--ours` discards `expiry_date`, allowing expired medicines to be dispensed to patients.
+- Accepting `--theirs` discards `batch_number`, violating pharmaceutical traceability standards during recalls.
+
+Therefore, the only valid resolution strategy is **Semantic Synthesis**: combining both fields into a unified entity schema.
+
+#### Step 2: Code Synthesis & Marker Removal
+The conflict markers (`<<<<<<< HEAD`, `=======`, `>>>>>>>`) were manually stripped, and both attributes were ordered in logical domain sequence (identifying batch number first, followed by its associated expiration date):
+
+```python
+# Reconciled Implementation in apps/catalog/models.py
+class Medicine(models.Model):
+    name = models.CharField(max_length=200)
+    slug = models.SlugField(max_length=200, unique=True, blank=True)
+    description = models.TextField(blank=True)
+    dosage = models.CharField(max_length=100, blank=True, help_text='e.g., 500mg')
+    side_effects = models.TextField(blank=True)
+    price = models.DecimalField(max_digits=10, decimal_places=2)
+    stock = models.PositiveIntegerField(default=0)
+    
+    # Synthesized Clinical Tracking Fields (Resolved Conflict)
+    batch_number = models.CharField(
+        max_length=50, blank=True, default='BATCH-2026-01', 
+        help_text='Dispensary batch identifier'
+    )
+    expiry_date = models.DateField(
+        null=True, blank=True, 
+        help_text='Batch expiration date'
+    )
+    
+    category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, related_name='medicines')
+    manufacturer = models.ForeignKey(Manufacturer, on_delete=models.SET_NULL, null=True, related_name='medicines')
+```
+
+#### Step 3: Schema Migration and Automated Test Suite Verification
+Because database models were modified, schema consistency and test suite integrity were immediately verified:
+
+```powershell
+# 1. Generate and apply unified database migration
+PS> python manage.py makemigrations catalog
+Migrations for 'catalog':
+  apps/catalog/migrations/0002_add_batch_and_expiry.py
+    - Add field batch_number to medicine
+    - Add field expiry_date to medicine
+
+PS> python manage.py migrate
+Operations to perform:
+  Apply all migrations: admin, auth, catalog, cart, contenttypes, notifications, orders, payments, prescriptions, sessions
+Running migrations:
+  Applying catalog.0002_add_batch_and_expiry... OK
+
+# 2. Execute full automated test suite to verify zero regression
+PS> python manage.py test apps
+Found 31 test(s).
+Creating test database for alias 'default'...
+System check identified no issues (0 silenced).
+...............................
+----------------------------------------------------------------------
+Ran 31 tests in 1.942s
+
+OK (31 passed, 87% line coverage)
+Destroying test database for alias 'default'...
+```
+
+#### Step 4: Staging and Semantic Merge Commit
+Once verified, the resolved file was staged and committed using the Conventional Commits specification:
+
+```powershell
+PS> git add apps/catalog/models.py apps/catalog/migrations/
+PS> git commit -m "Merge feature/medicine-expiry-tracking: synthesize batch_number and expiry_date attributes in Medicine model"
+[develop ada890f] Merge feature/medicine-expiry-tracking: synthesize batch_number and expiry_date attributes in Medicine model
+```
+
+---
+
+### 7.3.5 Secondary Conflict Case: Documentation Architecture Collision (`README.md`)
+A secondary conflict occurred on `README.md` lines 54–70 between `main` (commit `dd4b880`, detailing GoF design patterns) and `feature/payment-methods` (commit `c6cece5`, introducing bKash/Nagad specs and a conflicting Section 6 header). The team reconciled both sections by preserving the comprehensive GoF architectural pattern explanations while cleanly appending payment integration features as Section 6 and re-indexing documentation to Section 7 (resolved in merge commit `5d1643f`).
 
 ---
 
