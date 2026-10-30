@@ -1,0 +1,67 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "ePharmacy - Online Pharmacy Management System API",
+    "description": "OpenAPI 3.0 specification for ePharmacy Single-Pharmacy E-Commerce & Management System (RUET CSE 3206)",
+    "version": "1.0.0",
+    "contact": {
+      "name": "Nazmuzzaman",
+      "email": "2003153@student.ruet.ac.bd"
+    }
+  },
+  "servers": [
+    {
+      "url": "http://127.0.0.1:8000/api/v1",
+      "description": "Local Development Server"
+    }
+  ],
+  "paths": {
+    "/catalog/medicines/": {
+      "get": {
+        "summary": "List available medicines",
+        "description": "Returns a paginated list of available medicines with pricing, category, and stock availability.",
+        "responses": {
+          "200": {
+            "description": "A JSON array of medicine items"
+          }
+        }
+      }
+    },
+    "/cart/items/": {
+      "post": {
+        "summary": "Add item to cart",
+        "description": "Adds specified quantity of a medicine to the active session/user cart.",
+        "responses": {
+          "200": {
+            "description": "Cart updated successfully"
+          },
+          "400": {
+            "description": "Requested quantity exceeds available stock"
+          }
+        }
+      }
+    },
+    "/prescriptions/upload/": {
+      "post": {
+        "summary": "Upload medical prescription",
+        "description": "Uploads patient prescription image or PDF for pharmacist verification prior to fulfillment.",
+        "responses": {
+          "201": {
+            "description": "Prescription uploaded successfully with status PENDING"
+          }
+        }
+      }
+    },
+    "/orders/checkout/": {
+      "post": {
+        "summary": "Checkout and place order",
+        "description": "Executes order creation, locks stock atomically, and registers payment strategy.",
+        "responses": {
+          "201": {
+            "description": "Order placed successfully"
+          }
+        }
+      }
+    }
+  }
+}
