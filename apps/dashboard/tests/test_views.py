@@ -13,13 +13,12 @@ class DashboardAccessTests(TestCase):
             username='cust2', email='cust2@test.com', password='password123', role='customer'
         )
 
-    def test_customer_cannot_access_dashboard(self):
+    def test_customer_cannot_access_admin_dashboard(self):
         self.client.login(email='cust2@test.com', password='password123')
-        response = self.client.get(reverse('dashboard:home'))
-        self.assertEqual(response.status_code, 302)  # Redirects away
+        response = self.client.get(reverse('dashboard:admin_dashboard'))
+        self.assertEqual(response.status_code, 302)  # Redirects away to catalog:home
 
     def test_admin_can_access_dashboard(self):
         self.client.login(email='admin2@test.com', password='password123')
-        response = self.client.get(reverse('dashboard:home'))
+        response = self.client.get(reverse('dashboard:admin_dashboard'))
         self.assertEqual(response.status_code, 200)
-
