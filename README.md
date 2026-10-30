@@ -57,9 +57,15 @@ The test suite contains **31 comprehensive unit tests** achieving **87% code cov
 ## 5. Design Patterns Implemented
 1. **Repository Pattern (Structural):** `MedicineQuerySet.as_manager()` in `apps/catalog/models.py`.
 2. **Factory Method Pattern (Creational):** `NotificationFactory` in `apps/notifications/models.py`.
-3. **Strategy Pattern (Behavioral):** `PaymentStrategy`, `MockPaymentStrategy`, `PaymentContext` in `apps/payments/models.py`.
+3. **Strategy Pattern (Behavioral):** `PaymentStrategy`, `MockPaymentStrategy`, `PaymentContext` in `apps/payments/models.py` - supports multiple payment gateways including bKash, Nagad, and credit cards.
 4. **Observer Pattern (Behavioral):** Post-save Django signal listeners in `apps/cart/signals.py` and `apps/prescriptions/signals.py`.
 5. **Singleton Pattern (Creational):** Django thread-safe database connection pool.
+
+## 6. Payment Integration Features
+- **Mobile Banking:** bKash and Nagad integration for Bangladesh market
+- **Card Payments:** Visa, Mastercard, American Express support
+- **Cash on Delivery:** Available for verified customers
+- **Payment Security:** PCI-DSS compliant processing with encryption
 
 ## 6. Project Documentation
 - **Academic Project Report:** [`PROJECT_REPORT.md`](PROJECT_REPORT.md) (All 13 chapters, SRS, SDLC, UML, testing, reflection essay, learning log).
