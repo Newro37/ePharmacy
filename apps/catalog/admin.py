@@ -16,3 +16,4 @@ class MedicineAdmin(admin.ModelAdmin):
     list_filter = ('prescription_required', 'is_active', 'category')
     search_fields = ('name', 'dosage', 'description')
     prepopulated_fields = {'slug': ('name',)}
+

@@ -3,3 +3,4 @@ django-allauth>=65.0.0
 coverage>=7.6.0
 asgiref>=3.8.1
 sqlparse>=0.5.0
+

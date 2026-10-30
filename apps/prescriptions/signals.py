@@ -15,3 +15,4 @@ def prescription_status_changed(sender, instance, created, **kwargs):
             prescription=instance,
             message=msg
         )
+

@@ -63,3 +63,4 @@ The test suite contains **31 comprehensive unit tests** achieving **87% code cov
 
 ## 6. Project Documentation
 - **Academic Project Report:** [`PROJECT_REPORT.md`](PROJECT_REPORT.md) (All 13 chapters, SRS, SDLC, UML, testing, reflection essay, learning log).
+

@@ -29,3 +29,4 @@ class CatalogViewTests(TestCase):
         response = self.client.get(reverse('catalog:medicine_detail', kwargs={'slug': self.medicine.slug}))
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, 'Vitamin C Chewable')
+

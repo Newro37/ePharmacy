@@ -18,3 +18,4 @@ class CustomUserAdmin(UserAdmin):
 @admin.register(Address)
 class AddressAdmin(admin.ModelAdmin):
     list_display = ('user', 'label', 'street', 'city', 'is_default')
+

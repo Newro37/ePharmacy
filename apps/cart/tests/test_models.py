@@ -44,3 +44,4 @@ class CartAndOrderModelTests(TestCase):
             status=Order.Status.SHIPPED
         )
         self.assertFalse(order.can_cancel())
+

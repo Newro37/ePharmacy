@@ -22,3 +22,4 @@ class DashboardAccessTests(TestCase):
         self.client.login(email='admin2@test.com', password='password123')
         response = self.client.get(reverse('dashboard:home'))
         self.assertEqual(response.status_code, 200)
+

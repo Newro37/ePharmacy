@@ -8,3 +8,4 @@ urlpatterns = [
     path('address/add/', views.address_create_view, name='address_add'),
     path('address/<int:pk>/delete/', views.address_delete_view, name='address_delete'),
 ]
+

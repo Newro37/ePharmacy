@@ -144,3 +144,4 @@ class Command(BaseCommand):
             )
 
         self.stdout.write(self.style.SUCCESS("Database successfully seeded with 3 roles, categories, and 12 authentic medicines!"))
+

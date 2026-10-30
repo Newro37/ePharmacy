@@ -32,3 +32,4 @@ class CustomUserModelTests(TestCase):
         addr1.refresh_from_db()
         self.assertFalse(addr1.is_default)
         self.assertTrue(addr2.is_default)
+

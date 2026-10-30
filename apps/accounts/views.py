@@ -38,3 +38,4 @@ def address_delete_view(request, pk):
     address.delete()
     messages.success(request, 'Address removed.')
     return redirect('accounts:profile')
+

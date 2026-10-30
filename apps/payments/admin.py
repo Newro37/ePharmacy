@@ -6,3 +6,4 @@ class PaymentAdmin(admin.ModelAdmin):
     list_display = ('id', 'order', 'amount', 'method', 'status', 'transaction_id', 'created_at')
     list_filter = ('method', 'status', 'created_at')
     search_fields = ('transaction_id', 'order__id', 'order__user__email')
+

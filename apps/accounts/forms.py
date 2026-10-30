@@ -24,3 +24,4 @@ class AddressForm(forms.ModelForm):
             'postal_code': forms.TextInput(attrs={'class': 'form-control'}),
             'is_default': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
         }
+

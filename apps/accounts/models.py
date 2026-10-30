@@ -52,3 +52,4 @@ class Address(models.Model):
 
     def __str__(self):
         return f"{self.label}: {self.street}, {self.city}"
+

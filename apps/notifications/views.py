@@ -17,3 +17,4 @@ def mark_read_view(request, pk):
     if notif.link:
         return redirect(notif.link)
     return redirect('notifications:list')
+

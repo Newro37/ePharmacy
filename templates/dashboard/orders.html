@@ -5,8 +5,8 @@
 {% block dashboard_content %}
 <div class="d-flex justify-content-between align-items-center mb-4">
   <div>
-    <h3 class="fw-bold mb-0">Orders Fulfillment Pipeline</h3>
-    <p class="text-muted small">Update and monitor order progression across lifecycle states</p>
+    <h3 class="fw-bold mb-0"><i class="bi bi-box-seam-fill text-warning"></i> Orders Fulfillment & Dispatch Pipeline</h3>
+    <p class="text-muted small">Pharmacist Order Preparation, Clinical Sign-Off, Courier Dispatch, and Delivery</p>
   </div>
   <div class="d-flex gap-2">
     <a href="{% url 'dashboard:orders' %}" class="btn btn-sm btn-outline-secondary {% if not current_status %}active{% endif %}">All</a>
@@ -27,8 +27,8 @@
           <th>Delivery Address</th>
           <th>Total</th>
           <th>Current Status</th>
-          <th>Update Status</th>
-          <th>Action</th>
+          <th>Quick Fulfillment Actions</th>
+          <th>Details</th>
         </tr>
       </thead>
       <tbody>
@@ -42,27 +42,56 @@
             <td><small>{{ ord.delivery_address|truncatechars:45 }}</small></td>
             <td class="fw-bold text-success">৳{{ ord.total_amount }}</td>
             <td>
-              <span class="badge {% if ord.status == 'delivered' %}bg-success{% elif ord.status == 'cancelled' %}bg-danger{% else %}bg-warning text-dark{% endif %}">
+              <span class="badge {% if ord.status == 'delivered' %}bg-success{% elif ord.status == 'cancelled' %}bg-danger{% elif ord.status == 'shipped' %}bg-info text-dark{% elif ord.status == 'processing' %}bg-primary{% else %}bg-warning text-dark{% endif %}">
                 {{ ord.get_status_display }}
               </span>
             </td>
             <td>
-              <form action="{% url 'dashboard:order_status_update' pk=ord.pk %}" method="post" class="d-flex align-items-center gap-1">
-                {% csrf_token %}
-                <select name="status" class="form-select form-select-sm" style="width: 140px;">
-                  {% for code, label in status_choices %}
-                    <option value="{{ code }}" {% if ord.status == code %}selected{% endif %}>{{ label }}</option>
-                  {% endfor %}
-                </select>
-                <button type="submit" class="btn btn-sm btn-primary">Update</button>
-              </form>
+              <div class="d-flex align-items-center gap-1">
+                {% if ord.status == 'pending' %}
+                  <form action="{% url 'dashboard:order_fulfill' pk=ord.pk %}" method="post" class="d-inline">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-sm btn-primary fw-bold" title="Verify Rx & Package Medicine">
+                      <i class="bi bi-box"></i> Fulfill Order
+                    </button>
+                  </form>
+                {% elif ord.status == 'processing' %}
+                  <form action="{% url 'dashboard:order_dispatch' pk=ord.pk %}" method="post" class="d-inline">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-sm btn-info text-dark fw-bold" title="Handover to Courier">
+                      <i class="bi bi-truck"></i> Dispatch Order
+                    </button>
+                  </form>
+                {% elif ord.status == 'shipped' %}
+                  <form action="{% url 'dashboard:order_deliver' pk=ord.pk %}" method="post" class="d-inline">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-sm btn-success fw-bold" title="Confirm Delivery Handover">
+                      <i class="bi bi-check2-all"></i> Mark Delivered
+                    </button>
+                  </form>
+                {% elif ord.status == 'delivered' %}
+                  <span class="text-success small fw-bold"><i class="bi bi-check-circle-fill"></i> Completed</span>
+                {% elif ord.status == 'cancelled' %}
+                  <span class="text-danger small fw-bold"><i class="bi bi-x-circle-fill"></i> Cancelled</span>
+                {% endif %}
+
+                <!-- Inline Selector for Direct Override -->
+                <form action="{% url 'dashboard:order_status_update' pk=ord.pk %}" method="post" class="d-inline ms-1">
+                  {% csrf_token %}
+                  <select name="status" class="form-select form-select-sm d-inline-block" style="width: 120px;" onchange="this.form.submit()">
+                    {% for code, label in status_choices %}
+                      <option value="{{ code }}" {% if ord.status == code %}selected{% endif %}>{{ label }}</option>
+                    {% endfor %}
+                  </select>
+                </form>
+              </div>
             </td>
             <td>
               <a href="{% url 'cart:order_detail' order_id=ord.pk %}" class="btn btn-sm btn-outline-secondary">Inspect</a>
             </td>
           </tr>
         {% empty %}
-          <tr><td colspan="7" class="text-center py-4 text-muted">No orders matching filter.</td></tr>
+          <tr><td colspan="7" class="text-center py-4 text-muted">No orders found matching the filter.</td></tr>
         {% endfor %}
       </tbody>
     </table>

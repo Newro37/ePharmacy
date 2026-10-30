@@ -17,3 +17,4 @@ class NotificationFactoryPatternTests(TestCase):
         self.assertEqual(notif.notification_type, Notification.Type.ORDER_UPDATE)
         self.assertEqual(notif.link, '/cart/order/99/')
         self.assertFalse(notif.is_read)
+

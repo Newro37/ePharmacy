@@ -10,3 +10,4 @@ urlpatterns = [
     path('review/', views.review_list_view, name='review_list'),
     path('review/<int:pk>/', views.review_detail_view, name='review_detail'),
 ]
+

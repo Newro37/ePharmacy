@@ -179,3 +179,4 @@ def cancel_order_view(request, order_id):
     else:
         messages.error(request, "Only pending orders can be cancelled.")
     return redirect('cart:order_detail', order_id=order.pk)
+

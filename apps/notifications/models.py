@@ -59,3 +59,4 @@ class NotificationFactory:
             message=f"{medicine.name} has reached a low stock level of {medicine.stock} units.",
             link=f"/dashboard/medicines/"
         )
+

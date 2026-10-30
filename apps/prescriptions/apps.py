@@ -6,3 +6,4 @@ class PrescriptionsConfig(AppConfig):
 
     def ready(self):
         import apps.prescriptions.signals
+

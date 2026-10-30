@@ -32,3 +32,4 @@ class PaymentStrategyPatternTests(TestCase):
         self.payment.refresh_from_db()
         self.assertEqual(self.payment.status, Payment.Status.PENDING)
         self.assertTrue(self.payment.transaction_id.startswith('COD-'))
+

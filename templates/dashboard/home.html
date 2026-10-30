@@ -1,15 +1,23 @@
 {% extends 'base_dashboard.html' %}
 
-{% block title %}Executive Overview — ePharmacy Operations ERP{% endblock %}
+{% block title %}Executive Overview & Revenue Telemetry — ePharmacy ERP{% endblock %}
 
 {% block dashboard_content %}
 <div class="d-flex justify-content-between align-items-center mb-4">
   <div>
-    <h3 class="fw-bold mb-0">Dispensary Operations & Executive Telemetry</h3>
-    <p class="text-muted small">Central Single-Pharmacy Enterprise Telemetry</p>
+    <h3 class="fw-bold mb-0"><i class="bi bi-graph-up-arrow text-success"></i> Financial & Revenue Telemetry Dashboard</h3>
+    <p class="text-muted small">Central Single-Pharmacy Enterprise Telemetry, Revenue Settlement & Operational Health</p>
   </div>
-  <div>
-    <a href="{% url 'dashboard:medicine_create' %}" class="btn btn-success fw-bold"><i class="bi bi-plus-lg"></i> Add New Medicine</a>
+  <div class="d-flex gap-2">
+    <a href="{% url 'dashboard:medicine_create' %}" class="btn btn-success fw-bold"><i class="bi bi-plus-lg"></i> Add Medicine</a>
+    <a href="{% url 'prescriptions:review_list' %}" class="btn btn-outline-warning text-dark fw-bold position-relative">
+      <i class="bi bi-file-medical"></i> Clinical Rx Queue
+      {% if pending_prescriptions > 0 %}
+        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+          {{ pending_prescriptions }}
+        </span>
+      {% endif %}
+    </a>
   </div>
 </div>
 
@@ -21,7 +29,7 @@
         <div>
           <span class="text-muted small fw-bold text-uppercase">Total Orders</span>
           <h2 class="fw-bold my-1 text-dark">{{ total_orders }}</h2>
-          <span class="text-success small fw-bold"><i class="bi bi-check2"></i> All-time Volume</span>
+          <span class="text-success small fw-bold"><i class="bi bi-check2"></i> All-time Transactions</span>
         </div>
         <i class="bi bi-box-seam fs-1 text-success opacity-75"></i>
       </div>
@@ -32,9 +40,9 @@
     <div class="card p-3 shadow-sm border-0 border-start border-4 border-warning">
       <div class="d-flex justify-content-between align-items-center">
         <div>
-          <span class="text-muted small fw-bold text-uppercase">Pending Orders</span>
+          <span class="text-muted small fw-bold text-uppercase">Pending Fulfillment</span>
           <h2 class="fw-bold my-1 text-warning">{{ pending_orders }}</h2>
-          <span class="text-muted small">Awaiting Fulfillment</span>
+          <span class="text-muted small">Needs Pharmacist Action</span>
         </div>
         <i class="bi bi-hourglass-split fs-1 text-warning opacity-75"></i>
       </div>
@@ -47,7 +55,7 @@
         <div>
           <span class="text-muted small fw-bold text-uppercase">Gross Revenue</span>
           <h2 class="fw-bold my-1 text-primary">৳{{ gross_revenue|floatformat:2 }}</h2>
-          <span class="text-primary small fw-bold">Settled Volume</span>
+          <span class="text-primary small fw-bold">Settled Turnover</span>
         </div>
         <i class="bi bi-cash-stack fs-1 text-primary opacity-75"></i>
       </div>
@@ -60,9 +68,46 @@
         <div>
           <span class="text-muted small fw-bold text-uppercase">Low Stock Alerts</span>
           <h2 class="fw-bold my-1 text-danger">{{ low_stock_count }}</h2>
-          <span class="text-danger small fw-bold">&le; 10 units left</span>
+          <span class="text-danger small fw-bold">&le; 10 units threshold</span>
         </div>
         <i class="bi bi-exclamation-triangle fs-1 text-danger opacity-75"></i>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Detailed Financial Breakdown Row -->
+<div class="row g-3 mb-4">
+  <div class="col-md-4">
+    <div class="card p-3 shadow-sm border-0 bg-white">
+      <div class="d-flex align-items-center gap-3">
+        <div class="p-3 bg-light rounded text-success"><i class="bi bi-calculator fs-2"></i></div>
+        <div>
+          <span class="small text-muted fw-bold text-uppercase">Average Order Value (AOV)</span>
+          <h4 class="fw-bold mb-0 text-dark">৳{{ avg_order_value|floatformat:2 }}</h4>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="card p-3 shadow-sm border-0 bg-white">
+      <div class="d-flex align-items-center gap-3">
+        <div class="p-3 bg-light rounded text-primary"><i class="bi bi-wallet2 fs-2"></i></div>
+        <div>
+          <span class="small text-muted fw-bold text-uppercase">Online Card / MFS Settled</span>
+          <h4 class="fw-bold mb-0 text-primary">৳{{ online_revenue|floatformat:2 }}</h4>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="card p-3 shadow-sm border-0 bg-white">
+      <div class="d-flex align-items-center gap-3">
+        <div class="p-3 bg-light rounded text-warning"><i class="bi bi-cash-coin fs-2"></i></div>
+        <div>
+          <span class="small text-muted fw-bold text-uppercase">Cash on Delivery Handover</span>
+          <h4 class="fw-bold mb-0 text-warning">৳{{ cod_revenue|floatformat:2 }}</h4>
+        </div>
       </div>
     </div>
   </div>
@@ -73,8 +118,8 @@
   <div class="col-lg-8">
     <div class="card shadow-sm border-0">
       <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
-        <h5 class="fw-bold mb-0">Recent Order Activity</h5>
-        <a href="{% url 'dashboard:orders' %}" class="small text-decoration-none">View All Pipeline &rarr;</a>
+        <h5 class="fw-bold mb-0">Recent Order Activity & Fulfillment States</h5>
+        <a href="{% url 'dashboard:orders' %}" class="small text-decoration-none">Manage Full Pipeline &rarr;</a>
       </div>
       <div class="table-responsive">
         <table class="table table-hover align-middle mb-0">
@@ -111,7 +156,7 @@
     </div>
   </div>
 
-  <!-- Low Stock Items Warning -->
+  <!-- Critical Stock Warnings -->
   <div class="col-lg-4">
     <div class="card shadow-sm border-0 mb-4">
       <div class="card-header bg-white py-3">
@@ -123,7 +168,7 @@
             <li class="list-group-item d-flex justify-content-between align-items-center">
               <div>
                 <span class="fw-bold">{{ med.name }}</span>
-                <div class="small text-muted">{{ med.dosage }}</div>
+                <div class="small text-muted">{{ med.dosage }} | Batch: {{ med.batch_number|default:"B-01" }}</div>
               </div>
               <span class="badge bg-danger rounded-pill">{{ med.stock }} units</span>
             </li>

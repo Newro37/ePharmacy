@@ -43,3 +43,4 @@ class PrescriptionViewTests(TestCase):
         rx.refresh_from_db()
         self.assertEqual(rx.status, Prescription.Status.APPROVED)
         self.assertEqual(rx.reviewed_by, self.pharmacist)
+

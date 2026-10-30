@@ -56,6 +56,8 @@ class Medicine(models.Model):
     side_effects = models.TextField(blank=True)
     price = models.DecimalField(max_digits=10, decimal_places=2)
     stock = models.PositiveIntegerField(default=0)
+    batch_number = models.CharField(max_length=50, blank=True, default='BATCH-2026-01', help_text='Dispensary batch identifier')
+    expiry_date = models.DateField(null=True, blank=True, help_text='Batch expiration date')
     category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, related_name='medicines')
     manufacturer = models.ForeignKey(Manufacturer, on_delete=models.SET_NULL, null=True, related_name='medicines')
     image = models.FileField(upload_to='medicines/', blank=True, null=True)
@@ -80,3 +82,4 @@ class Medicine(models.Model):
 
     def __str__(self):
         return f"{self.name} ({self.dosage}) - ৳{self.price}"
+

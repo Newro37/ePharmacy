@@ -59,3 +59,4 @@ class CartViewTests(TestCase):
         self.assertEqual(self.medicine.stock, 8)  # 10 - 2 = 8
         self.assertEqual(Order.objects.filter(user=self.user).count(), 1)
         self.assertEqual(cart.items.count(), 0)  # Cart cleared
+

@@ -65,3 +65,4 @@ def review_detail_view(request, pk):
             return redirect('prescriptions:review_list')
 
     return render(request, 'prescriptions/review.html', {'prescription': prescription})
+

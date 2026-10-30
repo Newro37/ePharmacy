@@ -32,3 +32,4 @@ class PrescriptionWorkflowTests(TestCase):
         self.assertEqual(self.prescription.reviewed_by, self.pharmacist)
         # Verify notification signal dispatched
         self.assertEqual(self.customer.notifications.count(), 1)
+

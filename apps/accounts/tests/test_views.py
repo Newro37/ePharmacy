@@ -40,3 +40,4 @@ class AccountViewTests(TestCase):
         del_res = self.client.post(reverse('accounts:address_delete', kwargs={'pk': address.pk}))
         self.assertEqual(del_res.status_code, 302)
         self.assertFalse(Address.objects.filter(pk=address.pk).exists())
+

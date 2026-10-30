@@ -5,22 +5,56 @@
 {% block dashboard_content %}
 <div class="d-flex justify-content-between align-items-center mb-4">
   <div>
-    <h3 class="fw-bold mb-0">User Accounts & Role Governance</h3>
-    <p class="text-muted small">Super Admin RBAC User Audits</p>
+    <h3 class="fw-bold mb-0"><i class="bi bi-people-fill text-primary"></i> Staff Management & RBAC Governance</h3>
+    <p class="text-muted small">Manage licensed Pharmacists, Administrators, and Customer accounts</p>
+  </div>
+  <div>
+    <a href="{% url 'dashboard:staff_add' %}" class="btn btn-success fw-bold">
+      <i class="bi bi-person-plus"></i> Add New Pharmacist Staff
+    </a>
+  </div>
+</div>
+
+<!-- Role Counter Metrics -->
+<div class="row g-3 mb-4">
+  <div class="col-md-4">
+    <div class="card p-3 shadow-sm border-0 border-start border-4 border-info">
+      <span class="small text-muted fw-bold text-uppercase">Licensed Pharmacists</span>
+      <h3 class="fw-bold my-1 text-info">{{ pharmacist_count }}</h3>
+      <span class="small text-muted">Clinical Dispensary Staff</span>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="card p-3 shadow-sm border-0 border-start border-4 border-secondary">
+      <span class="small text-muted fw-bold text-uppercase">Registered Customers</span>
+      <h3 class="fw-bold my-1 text-secondary">{{ customer_count }}</h3>
+      <span class="small text-muted">Active Patients & Caregivers</span>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="card p-3 shadow-sm border-0 border-start border-4 border-danger">
+      <span class="small text-muted fw-bold text-uppercase">Super Admins</span>
+      <h3 class="fw-bold my-1 text-danger">1</h3>
+      <span class="small text-muted">Dispensary Business Owner</span>
+    </div>
   </div>
 </div>
 
 <div class="card shadow-sm border-0">
+  <div class="card-header bg-white py-3">
+    <h5 class="fw-bold mb-0">Staff & User Accounts Directory</h5>
+  </div>
   <div class="table-responsive">
     <table class="table table-hover align-middle mb-0">
       <thead class="table-light">
         <tr>
-          <th>User / Email</th>
+          <th>User Account</th>
           <th>Full Name</th>
-          <th>Role</th>
-          <th>Phone</th>
-          <th>Active</th>
+          <th>Role Classification</th>
+          <th>Contact Phone</th>
+          <th>Account Status</th>
           <th>Date Joined</th>
+          <th class="text-end">Staff Actions</th>
         </tr>
       </thead>
       <tbody>
@@ -40,12 +74,28 @@
             <td>{{ u.phone|default:"—" }}</td>
             <td>
               {% if u.is_active %}
-                <span class="text-success"><i class="bi bi-check-circle-fill"></i> Active</span>
+                <span class="badge bg-success">Active</span>
               {% else %}
-                <span class="text-muted"><i class="bi bi-x-circle-fill"></i> Suspended</span>
+                <span class="badge bg-danger">Suspended</span>
               {% endif %}
             </td>
             <td><small class="text-muted">{{ u.date_joined|date:"M d, Y" }}</small></td>
+            <td class="text-end">
+              {% if u != user %}
+                <form action="{% url 'dashboard:user_toggle' pk=u.pk %}" method="post" class="d-inline">
+                  {% csrf_token %}
+                  <button type="submit" class="btn btn-sm {% if u.is_active %}btn-outline-danger{% else %}btn-outline-success{% endif %}" title="Toggle Active / Suspended">
+                    {% if u.is_active %}
+                      <i class="bi bi-slash-circle"></i> Suspend
+                    {% else %}
+                      <i class="bi bi-check-circle"></i> Activate
+                    {% endif %}
+                  </button>
+                </form>
+              {% else %}
+                <span class="badge bg-light text-muted border">Current User</span>
+              {% endif %}
+            </td>
           </tr>
         {% endfor %}
       </tbody>

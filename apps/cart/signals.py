@@ -30,3 +30,4 @@ def order_status_changed(sender, instance, created, **kwargs):
             order=instance,
             message=f"Order #{instance.pk} status updated to {instance.get_status_display()}."
         )
+

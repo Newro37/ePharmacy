@@ -42,3 +42,4 @@ def medicine_detail_view(request, slug):
         'medicine': medicine,
         'related_medicines': related_medicines,
     })
+

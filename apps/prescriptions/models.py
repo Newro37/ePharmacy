@@ -35,3 +35,4 @@ class Prescription(models.Model):
 
     def __str__(self):
         return f"Prescription #{self.pk} by {self.user.email} [{self.status}]"
+
