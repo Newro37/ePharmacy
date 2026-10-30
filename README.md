@@ -59,10 +59,16 @@ The system implements 5 proven GoF design patterns for maintainability:
 
 1. **Repository Pattern (Structural):** `MedicineQuerySet.as_manager()` in `apps/catalog/models.py` - encapsulates data access logic.
 2. **Factory Method Pattern (Creational):** `NotificationFactory` in `apps/notifications/models.py` - centralizes object creation.
-3. **Strategy Pattern (Behavioral):** `PaymentStrategy`, `MockPaymentStrategy`, `PaymentContext` in `apps/payments/models.py` - enables flexible payment processing.
+3. **Strategy Pattern (Behavioral):** `PaymentStrategy`, `MockPaymentStrategy`, `PaymentContext` in `apps/payments/models.py` - enables flexible payment processing with support for bKash, Nagad, and credit cards.
 4. **Observer Pattern (Behavioral):** Post-save Django signal listeners in `apps/cart/signals.py` and `apps/prescriptions/signals.py` - decouples event handling.
 5. **Singleton Pattern (Creational):** Django thread-safe database connection pool - ensures single instance.
 
-## 6. Project Documentation
+## 6. Payment Integration Features
+- **Mobile Banking:** bKash and Nagad integration for Bangladesh market
+- **Card Payments:** Visa, Mastercard, American Express support
+- **Cash on Delivery:** Available for verified customers
+- **Payment Security:** PCI-DSS compliant processing with encryption
+
+## 7. Project Documentation
 - **Academic Project Report:** [`PROJECT_REPORT.md`](PROJECT_REPORT.md) (All 13 chapters, SRS, SDLC, UML, testing, reflection essay, learning log).
 
